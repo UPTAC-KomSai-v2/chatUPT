@@ -66,7 +66,7 @@ public class ChatWindow extends javax.swing.JPanel {
         chatHeader.add(usernameLabel);
 
         chatStatus.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        chatStatus.setText("is idle.");
+        chatStatus.setText("is Idle");
         chatHeader.add(chatStatus);
 
         add(chatHeader, java.awt.BorderLayout.NORTH);
@@ -90,6 +90,11 @@ public class ChatWindow extends javax.swing.JPanel {
         inputField.setText("Enter Message");
         inputField.setFocusTraversalPolicyProvider(true);
         inputField.setPreferredSize(new java.awt.Dimension(200, 40));
+        inputField.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                inputFieldMouseClicked(evt);
+            }
+        });
         inputField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 inputFieldKeyPressed(evt);
@@ -122,12 +127,16 @@ public class ChatWindow extends javax.swing.JPanel {
     }//GEN-LAST:event_sendButtonActionPerformed
 
     private void inputFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputFieldKeyPressed
-        chatStatus.setText("Typing...");
+        chatStatus.setText("is Typing...");
     }//GEN-LAST:event_inputFieldKeyPressed
 
     private void inputFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputFieldKeyReleased
-        chatStatus.setText("Idle");
+        chatStatus.setText("is Idle");
     }//GEN-LAST:event_inputFieldKeyReleased
+
+    private void inputFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inputFieldMouseClicked
+        chatStatus.setText("");
+    }//GEN-LAST:event_inputFieldMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton attachButton;
