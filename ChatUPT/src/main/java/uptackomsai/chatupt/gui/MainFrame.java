@@ -13,26 +13,25 @@ import uptackomsai.chatupt.network.Client;
  * @author Lei
  */
 public class MainFrame extends javax.swing.JFrame {
-//    private ChatWindow chatWindow;
-//    private Client client;
+    private Client user;
     /**
      * Creates new form ChatFrame
      */
-    public MainFrame() {
+    public MainFrame(String username) { // for testing, I think UserID would be better instead of username
         initComponents();
         setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         setTitle("ChatUPT");
         setSize(800, 600);
         setLocationRelativeTo(null);
         
-        // for testing
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter your name: ");
-        String username = scanner.nextLine();
+        usernameItem.setText(username);
         
         // Initialize the ChatWindow
         ChatWindow chatWindow = new ChatWindow("localhost", 12345, username); 
         add(chatWindow, BorderLayout.CENTER);
+//        remove(chatWindow);
+//        revalidate();  // Reorganize the layout
+//        repaint();     // Refresh the UI
     }
 
     /**
@@ -44,30 +43,84 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        Header = new javax.swing.JPanel();
+        popupMenu = new javax.swing.JPopupMenu();
+        usernameItem = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        Settings = new javax.swing.JMenuItem();
+        Logout = new javax.swing.JMenuItem();
+        headPanel = new javax.swing.JPanel();
+        appPanel = new javax.swing.JPanel();
+        appiconLabel = new javax.swing.JLabel();
+        appnameLabel = new javax.swing.JLabel();
+        profilePanel = new javax.swing.JPanel();
+        proficonToggleButton = new javax.swing.JToggleButton();
         LeftSidebar = new javax.swing.JSplitPane();
-        ChannelList = new javax.swing.JPanel();
-        UserList = new javax.swing.JPanel();
+        channelListPanel = new javax.swing.JPanel();
+        channelListLabel = new javax.swing.JLabel();
+        channelScrollPane = new javax.swing.JScrollPane();
+        userListPanel = new javax.swing.JPanel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        onlineUserScrollPane = new javax.swing.JScrollPane();
+        allUserScrollPane = new javax.swing.JScrollPane();
+
+        popupMenu.setComponentPopupMenu(popupMenu);
+
+        usernameItem.setText("jMenuItem1");
+        popupMenu.add(usernameItem);
+        popupMenu.add(jSeparator1);
+
+        Settings.setText("Settings");
+        Settings.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SettingsActionPerformed(evt);
+            }
+        });
+        popupMenu.add(Settings);
+
+        Logout.setText("Logout");
+        Logout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LogoutActionPerformed(evt);
+            }
+        });
+        popupMenu.add(Logout);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(800, 600));
         setResizable(false);
 
-        Header.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        Header.setPreferredSize(new java.awt.Dimension(800, 50));
+        headPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        headPanel.setPreferredSize(new java.awt.Dimension(800, 50));
+        headPanel.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout HeaderLayout = new javax.swing.GroupLayout(Header);
-        Header.setLayout(HeaderLayout);
-        HeaderLayout.setHorizontalGroup(
-            HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 396, Short.MAX_VALUE)
-        );
-        HeaderLayout.setVerticalGroup(
-            HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 46, Short.MAX_VALUE)
-        );
+        appiconLabel.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        appiconLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        appiconLabel.setText("<logo>");
+        appiconLabel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        appiconLabel.setPreferredSize(new java.awt.Dimension(40, 40));
+        appPanel.add(appiconLabel);
 
-        getContentPane().add(Header, java.awt.BorderLayout.PAGE_START);
+        appnameLabel.setText("ChatUPT");
+        appPanel.add(appnameLabel);
+
+        headPanel.add(appPanel, java.awt.BorderLayout.LINE_START);
+
+        proficonToggleButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        proficonToggleButton.setText("<prof>");
+        proficonToggleButton.setBorder(null);
+        proficonToggleButton.setComponentPopupMenu(popupMenu);
+        proficonToggleButton.setInheritsPopupMenu(true);
+        proficonToggleButton.setPreferredSize(new java.awt.Dimension(40, 40));
+        proficonToggleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                proficonToggleButtonActionPerformed(evt);
+            }
+        });
+        profilePanel.add(proficonToggleButton);
+
+        headPanel.add(profilePanel, java.awt.BorderLayout.LINE_END);
+
+        getContentPane().add(headPanel, java.awt.BorderLayout.PAGE_START);
 
         LeftSidebar.setDividerLocation(200);
         LeftSidebar.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
@@ -76,43 +129,53 @@ public class MainFrame extends javax.swing.JFrame {
         LeftSidebar.setEnabled(false);
         LeftSidebar.setPreferredSize(new java.awt.Dimension(200, 0));
 
-        ChannelList.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        ChannelList.setPreferredSize(new java.awt.Dimension(200, 100));
+        channelListPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        channelListPanel.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout ChannelListLayout = new javax.swing.GroupLayout(ChannelList);
-        ChannelList.setLayout(ChannelListLayout);
-        ChannelListLayout.setHorizontalGroup(
-            ChannelListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 196, Short.MAX_VALUE)
-        );
-        ChannelListLayout.setVerticalGroup(
-            ChannelListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 171, Short.MAX_VALUE)
-        );
+        channelListLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        channelListLabel.setText("Channels");
+        channelListPanel.add(channelListLabel, java.awt.BorderLayout.PAGE_START);
+        channelListPanel.add(channelScrollPane, java.awt.BorderLayout.CENTER);
 
-        LeftSidebar.setTopComponent(ChannelList);
+        LeftSidebar.setTopComponent(channelListPanel);
 
-        UserList.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        UserList.setPreferredSize(new java.awt.Dimension(200, 100));
-        UserList.setRequestFocusEnabled(false);
+        userListPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        userListPanel.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout UserListLayout = new javax.swing.GroupLayout(UserList);
-        UserList.setLayout(UserListLayout);
-        UserListLayout.setHorizontalGroup(
-            UserListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 196, Short.MAX_VALUE)
-        );
-        UserListLayout.setVerticalGroup(
-            UserListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+        jTabbedPane1.addTab("Online", onlineUserScrollPane);
+        jTabbedPane1.addTab("All", allUserScrollPane);
 
-        LeftSidebar.setRightComponent(UserList);
+        userListPanel.add(jTabbedPane1, java.awt.BorderLayout.CENTER);
+
+        LeftSidebar.setRightComponent(userListPanel);
 
         getContentPane().add(LeftSidebar, java.awt.BorderLayout.LINE_START);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void proficonToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proficonToggleButtonActionPerformed
+        if (proficonToggleButton.isSelected()) {
+            popupMenu.show(proficonToggleButton, -proficonToggleButton.getWidth(), proficonToggleButton.getHeight());
+        } else {
+            popupMenu.setVisible(false);
+        }
+    }//GEN-LAST:event_proficonToggleButtonActionPerformed
+
+    private void SettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SettingsActionPerformed
+        proficonToggleButton.setSelected(false);
+        
+        ProfileManageFrame settingsFrame = new ProfileManageFrame(); 
+        settingsFrame.setVisible(true);
+    }//GEN-LAST:event_SettingsActionPerformed
+
+    private void LogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutActionPerformed
+        proficonToggleButton.setSelected(false);
+        
+        LoginFrame loginFrame = new LoginFrame(); 
+        loginFrame.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_LogoutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -145,15 +208,30 @@ public class MainFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainFrame().setVisible(true);
+                new MainFrame("user").setVisible(true); // for testing, temporary parameter username
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel ChannelList;
-    private javax.swing.JPanel Header;
     private javax.swing.JSplitPane LeftSidebar;
-    private javax.swing.JPanel UserList;
+    private javax.swing.JMenuItem Logout;
+    private javax.swing.JMenuItem Settings;
+    private javax.swing.JScrollPane allUserScrollPane;
+    private javax.swing.JPanel appPanel;
+    private javax.swing.JLabel appiconLabel;
+    private javax.swing.JLabel appnameLabel;
+    private javax.swing.JLabel channelListLabel;
+    private javax.swing.JPanel channelListPanel;
+    private javax.swing.JScrollPane channelScrollPane;
+    private javax.swing.JPanel headPanel;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JScrollPane onlineUserScrollPane;
+    private javax.swing.JPopupMenu popupMenu;
+    private javax.swing.JToggleButton proficonToggleButton;
+    private javax.swing.JPanel profilePanel;
+    private javax.swing.JPanel userListPanel;
+    private javax.swing.JMenuItem usernameItem;
     // End of variables declaration//GEN-END:variables
 }

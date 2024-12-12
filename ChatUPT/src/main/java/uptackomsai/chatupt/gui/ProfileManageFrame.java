@@ -14,6 +14,9 @@ public class ProfileManageFrame extends javax.swing.JFrame {
      * Creates new form ProfileFrame
      */
     public ProfileManageFrame() {
+        setUndecorated(true); 
+        setResizable(false);
+        
         initComponents();
         setTitle("ChatUPT");
         setLocationRelativeTo(null);
@@ -28,6 +31,7 @@ public class ProfileManageFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        borderPanel = new javax.swing.JPanel();
         headPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         profilepicPanel = new javax.swing.JPanel();
@@ -50,18 +54,24 @@ public class ProfileManageFrame extends javax.swing.JFrame {
         emailPanel = new javax.swing.JPanel();
         emailLabel = new javax.swing.JLabel();
         emailTextField = new javax.swing.JTextField();
+        settingsPanel = new javax.swing.JPanel();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jCheckBox2 = new javax.swing.JCheckBox();
         actionsPanel = new javax.swing.JPanel();
         saveButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        borderPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        borderPanel.setLayout(new java.awt.BorderLayout());
+
         headPanel.setPreferredSize(new java.awt.Dimension(400, 50));
 
         jLabel1.setText("Profile Management");
         headPanel.add(jLabel1);
 
-        getContentPane().add(headPanel, java.awt.BorderLayout.PAGE_START);
+        borderPanel.add(headPanel, java.awt.BorderLayout.PAGE_START);
 
         profilepicPreview.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         profilepicPreview.setToolTipText("");
@@ -80,10 +90,10 @@ public class ProfileManageFrame extends javax.swing.JFrame {
 
         profilepicPanel.add(profilepicPreview);
 
-        getContentPane().add(profilepicPanel, java.awt.BorderLayout.CENTER);
+        borderPanel.add(profilepicPanel, java.awt.BorderLayout.CENTER);
 
-        inputPanel.setPreferredSize(new java.awt.Dimension(400, 240));
-        inputPanel.setLayout(new java.awt.GridLayout(6, 1));
+        inputPanel.setPreferredSize(new java.awt.Dimension(400, 280));
+        inputPanel.setLayout(new java.awt.GridLayout(7, 1));
 
         usernamePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.TRAILING));
 
@@ -143,21 +153,51 @@ public class ProfileManageFrame extends javax.swing.JFrame {
 
         inputPanel.add(emailPanel);
 
+        jCheckBox1.setSelected(true);
+        jCheckBox1.setText("Email Notifications");
+        settingsPanel.add(jCheckBox1);
+
+        jCheckBox2.setText("Desktop Notifications");
+        settingsPanel.add(jCheckBox2);
+
+        inputPanel.add(settingsPanel);
+
         actionsPanel.setPreferredSize(new java.awt.Dimension(400, 50));
 
         saveButton.setText("Save Changes");
         saveButton.setToolTipText("");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
         actionsPanel.add(saveButton);
 
         cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
         actionsPanel.add(cancelButton);
 
         inputPanel.add(actionsPanel);
 
-        getContentPane().add(inputPanel, java.awt.BorderLayout.PAGE_END);
+        borderPanel.add(inputPanel, java.awt.BorderLayout.PAGE_END);
+
+        getContentPane().add(borderPanel, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        // update backend 
+        this.dispose();
+    }//GEN-LAST:event_saveButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -199,6 +239,7 @@ public class ProfileManageFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel actionsPanel;
+    private javax.swing.JPanel borderPanel;
     private javax.swing.JButton cancelButton;
     private javax.swing.JPasswordField currentpassField;
     private javax.swing.JLabel currentpassLabel;
@@ -208,6 +249,8 @@ public class ProfileManageFrame extends javax.swing.JFrame {
     private javax.swing.JTextField emailTextField;
     private javax.swing.JPanel headPanel;
     private javax.swing.JPanel inputPanel;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPasswordField newpass2Field;
     private javax.swing.JLabel newpass2Label;
@@ -220,6 +263,7 @@ public class ProfileManageFrame extends javax.swing.JFrame {
     private javax.swing.JPanel profilepicPanel;
     private javax.swing.JPanel profilepicPreview;
     private javax.swing.JButton saveButton;
+    private javax.swing.JPanel settingsPanel;
     private javax.swing.JLabel usernameLabel;
     private javax.swing.JPanel usernamePanel;
     private javax.swing.JTextField usernameTextField;

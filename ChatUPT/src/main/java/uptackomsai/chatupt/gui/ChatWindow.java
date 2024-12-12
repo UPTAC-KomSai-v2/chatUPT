@@ -19,8 +19,14 @@ public class ChatWindow extends javax.swing.JPanel {
      */
     public ChatWindow(String serverHost, int serverPort, String username) {
         initComponents();
-        chatArea.setEditable(false);
-        usernameLabel.setText(username);
+        
+        // Hide adminPanel if not admin user
+//        adminPanel.setVisible(false); 
+//        revalidate(); 
+//        repaint();
+        
+        usernameLabel.setText(username); // supposed to be channel's name or the other user's username
+        
         // Initialize client and connect to the server
         client = new Client(serverHost, serverPort);
         try {
@@ -50,9 +56,13 @@ public class ChatWindow extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        chatHeader = new javax.swing.JPanel();
+        headPanel = new javax.swing.JPanel();
+        chatheaderPanel = new javax.swing.JPanel();
         usernameLabel = new javax.swing.JLabel();
-        chatStatus = new javax.swing.JLabel();
+        activeStatus = new javax.swing.JLabel();
+        typingIndicator = new javax.swing.JLabel();
+        adminPanel = new javax.swing.JPanel();
+        adminSettings = new javax.swing.JButton();
         chatDisplayPanel = new javax.swing.JScrollPane();
         chatArea = new javax.swing.JTextArea();
         inputPanel = new javax.swing.JPanel();
@@ -64,14 +74,34 @@ public class ChatWindow extends javax.swing.JPanel {
         setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         setLayout(new java.awt.BorderLayout());
 
-        usernameLabel.setText("User");
-        chatHeader.add(usernameLabel);
+        headPanel.setLayout(new java.awt.BorderLayout());
 
-        chatStatus.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        chatStatus.setText("is Idle");
-        chatHeader.add(chatStatus);
+        chatheaderPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 9));
 
-        add(chatHeader, java.awt.BorderLayout.NORTH);
+        usernameLabel.setText("<chatname>");
+        chatheaderPanel.add(usernameLabel);
+
+        activeStatus.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        activeStatus.setText("<active_status>");
+        chatheaderPanel.add(activeStatus);
+
+        typingIndicator.setText("<typing_indicator>");
+        chatheaderPanel.add(typingIndicator);
+
+        headPanel.add(chatheaderPanel, java.awt.BorderLayout.LINE_START);
+
+        adminSettings.setText("Settings");
+        adminSettings.setToolTipText("");
+        adminSettings.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminSettingsActionPerformed(evt);
+            }
+        });
+        adminPanel.add(adminSettings);
+
+        headPanel.add(adminPanel, java.awt.BorderLayout.LINE_END);
+
+        add(headPanel, java.awt.BorderLayout.NORTH);
 
         chatArea.setEditable(false);
         chatArea.setColumns(20);
@@ -95,7 +125,7 @@ public class ChatWindow extends javax.swing.JPanel {
         emojiButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         inputPanel.add(emojiButton);
 
-        inputField.setText("Enter Message");
+        inputField.setToolTipText("Enter Message");
         inputField.setFocusTraversalPolicyProvider(true);
         inputField.setPreferredSize(new java.awt.Dimension(200, 30));
         inputField.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -136,27 +166,36 @@ public class ChatWindow extends javax.swing.JPanel {
     }//GEN-LAST:event_sendButtonActionPerformed
 
     private void inputFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputFieldKeyPressed
-        chatStatus.setText("is Typing...");
+        activeStatus.setText("is Typing...");
     }//GEN-LAST:event_inputFieldKeyPressed
 
     private void inputFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputFieldKeyReleased
-        chatStatus.setText("is Idle");
+        activeStatus.setText("is Idle");
     }//GEN-LAST:event_inputFieldKeyReleased
 
     private void inputFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inputFieldMouseClicked
         inputField.setText("");
     }//GEN-LAST:event_inputFieldMouseClicked
 
+    private void adminSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminSettingsActionPerformed
+        AdminFrame adminFrame = new AdminFrame(); 
+        adminFrame.setVisible(true);
+    }//GEN-LAST:event_adminSettingsActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel activeStatus;
+    private javax.swing.JPanel adminPanel;
+    private javax.swing.JButton adminSettings;
     private javax.swing.JButton attachButton;
     private javax.swing.JTextArea chatArea;
     private javax.swing.JScrollPane chatDisplayPanel;
-    private javax.swing.JPanel chatHeader;
-    private javax.swing.JLabel chatStatus;
+    private javax.swing.JPanel chatheaderPanel;
     private javax.swing.JButton emojiButton;
+    private javax.swing.JPanel headPanel;
     private javax.swing.JTextField inputField;
     private javax.swing.JPanel inputPanel;
     private javax.swing.JButton sendButton;
+    private javax.swing.JLabel typingIndicator;
     private javax.swing.JLabel usernameLabel;
     // End of variables declaration//GEN-END:variables
 }

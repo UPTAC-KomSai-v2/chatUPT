@@ -35,25 +35,30 @@ public class LoginFrame extends javax.swing.JFrame {
         usernamePanel = new javax.swing.JPanel();
         usernameLabel = new javax.swing.JLabel();
         usernameTextField = new javax.swing.JTextField();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(2, 0), new java.awt.Dimension(2, 0), new java.awt.Dimension(2, 32767));
         passwordPanel = new javax.swing.JPanel();
         passwordLabel = new javax.swing.JLabel();
         jPasswordField1 = new javax.swing.JPasswordField();
         footPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        loginButton = new javax.swing.JButton();
+        signupButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         headPanel.setPreferredSize(new java.awt.Dimension(400, 150));
-        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout();
+        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 30);
         flowLayout1.setAlignOnBaseline(true);
         headPanel.setLayout(flowLayout1);
 
-        LogoLabel.setText("<Insert Logo Here>");
+        LogoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        LogoLabel.setText("<Logo>");
+        LogoLabel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        LogoLabel.setPreferredSize(new java.awt.Dimension(100, 100));
         headPanel.add(LogoLabel);
 
         getContentPane().add(headPanel, java.awt.BorderLayout.PAGE_START);
 
+        inputPanel.setPreferredSize(new java.awt.Dimension(400, 80));
         inputPanel.setLayout(new java.awt.GridLayout(2, 0));
 
         usernamePanel.setPreferredSize(new java.awt.Dimension(400, 50));
@@ -62,7 +67,6 @@ public class LoginFrame extends javax.swing.JFrame {
         usernameLabel.setText("Username ");
         usernamePanel.add(usernameLabel);
 
-        usernameTextField.setText("Enter Username");
         usernameTextField.setPreferredSize(new java.awt.Dimension(250, 30));
         usernameTextField.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -70,6 +74,7 @@ public class LoginFrame extends javax.swing.JFrame {
             }
         });
         usernamePanel.add(usernameTextField);
+        usernamePanel.add(filler2);
 
         inputPanel.add(usernamePanel);
 
@@ -88,11 +93,21 @@ public class LoginFrame extends javax.swing.JFrame {
 
         footPanel.setPreferredSize(new java.awt.Dimension(400, 50));
 
-        jLabel1.setText("No Account? ");
-        footPanel.add(jLabel1);
+        loginButton.setText("Login");
+        loginButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginButtonActionPerformed(evt);
+            }
+        });
+        footPanel.add(loginButton);
 
-        jButton1.setLabel("Create Account Here");
-        footPanel.add(jButton1);
+        signupButton.setText("Signup");
+        signupButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                signupButtonActionPerformed(evt);
+            }
+        });
+        footPanel.add(signupButton);
 
         getContentPane().add(footPanel, java.awt.BorderLayout.PAGE_END);
 
@@ -102,6 +117,18 @@ public class LoginFrame extends javax.swing.JFrame {
     private void usernameTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usernameTextFieldMouseClicked
         usernameTextField.setText("");
     }//GEN-LAST:event_usernameTextFieldMouseClicked
+
+    private void signupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signupButtonActionPerformed
+        SignupFrame signupFrame = new SignupFrame(); // Open SettingsFrame
+        signupFrame.setVisible(true); // Show the new frame
+//        this.dispose(); 
+    }//GEN-LAST:event_signupButtonActionPerformed
+
+    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
+        MainFrame mainFrame = new MainFrame(usernameTextField.getText()); // for testing passing the username instead of userID
+        mainFrame.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_loginButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -140,14 +167,15 @@ public class LoginFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel LogoLabel;
+    private javax.swing.Box.Filler filler2;
     private javax.swing.JPanel footPanel;
     private javax.swing.JPanel headPanel;
     private javax.swing.JPanel inputPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPasswordField jPasswordField1;
+    private javax.swing.JButton loginButton;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JPanel passwordPanel;
+    private javax.swing.JButton signupButton;
     private javax.swing.JLabel usernameLabel;
     private javax.swing.JPanel usernamePanel;
     private javax.swing.JTextField usernameTextField;

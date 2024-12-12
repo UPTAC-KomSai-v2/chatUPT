@@ -14,10 +14,14 @@ public class SignupFrame extends javax.swing.JFrame {
      * Creates new form SignupFrame
      */
     public SignupFrame() {
+        setUndecorated(true); 
+        setResizable(false);
+        
         initComponents();
         setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         setTitle("ChatUPT");
         setLocationRelativeTo(null);
+        
     }
 
     /**
@@ -29,6 +33,7 @@ public class SignupFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        borderPanel = new javax.swing.JPanel();
         headPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         profilepicPanel = new javax.swing.JPanel();
@@ -55,12 +60,15 @@ public class SignupFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(400, 400));
 
+        borderPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        borderPanel.setLayout(new java.awt.BorderLayout());
+
         headPanel.setPreferredSize(new java.awt.Dimension(400, 50));
 
         jLabel1.setText("Signup Form");
         headPanel.add(jLabel1);
 
-        getContentPane().add(headPanel, java.awt.BorderLayout.PAGE_START);
+        borderPanel.add(headPanel, java.awt.BorderLayout.PAGE_START);
 
         profilepicPreview.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         profilepicPreview.setToolTipText("");
@@ -79,7 +87,7 @@ public class SignupFrame extends javax.swing.JFrame {
 
         profilepicPanel.add(profilepicPreview);
 
-        getContentPane().add(profilepicPanel, java.awt.BorderLayout.CENTER);
+        borderPanel.add(profilepicPanel, java.awt.BorderLayout.CENTER);
 
         inputPanel.setPreferredSize(new java.awt.Dimension(400, 200));
         inputPanel.setLayout(new java.awt.GridLayout(5, 1));
@@ -131,17 +139,40 @@ public class SignupFrame extends javax.swing.JFrame {
 
         submitButton.setText("Submit Form");
         submitButton.setToolTipText("");
+        submitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                submitButtonActionPerformed(evt);
+            }
+        });
         actionsPanel.add(submitButton);
 
         cancelButton.setText("Cancel Signup");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
         actionsPanel.add(cancelButton);
 
         inputPanel.add(actionsPanel);
 
-        getContentPane().add(inputPanel, java.awt.BorderLayout.PAGE_END);
+        borderPanel.add(inputPanel, java.awt.BorderLayout.PAGE_END);
+
+        getContentPane().add(borderPanel, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
+        
+        // create account backend
+        
+        this.dispose();
+    }//GEN-LAST:event_submitButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -180,6 +211,7 @@ public class SignupFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel actionsPanel;
+    private javax.swing.JPanel borderPanel;
     private javax.swing.JButton cancelButton;
     private javax.swing.JLabel emailLabel;
     private javax.swing.JPanel emailPanel;
