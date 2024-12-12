@@ -4,6 +4,17 @@
  */
 package uptackomsai.chatupt.gui;
 
+import com.google.gson.Gson;
+import org.mindrot.jbcrypt.BCrypt;
+
+import java.net.Socket;
+import java.io.PrintWriter;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import uptackomsai.chatup.model.User;
+
 /**
  *
  * @author Lei
@@ -170,7 +181,41 @@ public class SignupFrame extends javax.swing.JFrame {
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
         
         // create account backend
-        
+        String username = usernameTextField.getText().trim();
+        char[] password = passwordField.getPassword();
+        char[] confirmPassword = password2Field.getPassword();
+        String email = emailTextField.getText().trim();
+
+        // Basic validation
+        if (username.isEmpty() || password.length == 0 || confirmPassword.length == 0 || email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill all fields.");
+            return;
+        }
+        if (!new String(password).equals(new String(confirmPassword))) {
+            JOptionPane.showMessageDialog(this, "Passwords do not match.");
+            return;
+        }
+
+        // Hash password before sending
+        String hashedPassword = BCrypt.hashpw(new String(password), BCrypt.gensalt());
+
+        // Create a User object
+        User user = new User(username, hashedPassword, email);
+
+        // Send the JSON object to the server
+        try (Socket socket = new Socket("localhost", 12345);
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+
+            Gson gson = new Gson();
+            String json = gson.toJson(user);
+            out.println(json);
+            // Wait for server response
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            System.out.println("Server response: " + response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.dispose();
     }//GEN-LAST:event_submitButtonActionPerformed
 
