@@ -51,51 +51,56 @@ public class MainFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(800, 600));
+        setResizable(false);
 
-        Header.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Header.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         Header.setPreferredSize(new java.awt.Dimension(800, 50));
 
         javax.swing.GroupLayout HeaderLayout = new javax.swing.GroupLayout(Header);
         Header.setLayout(HeaderLayout);
         HeaderLayout.setHorizontalGroup(
             HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 398, Short.MAX_VALUE)
+            .addGap(0, 396, Short.MAX_VALUE)
         );
         HeaderLayout.setVerticalGroup(
             HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 48, Short.MAX_VALUE)
+            .addGap(0, 46, Short.MAX_VALUE)
         );
 
         getContentPane().add(Header, java.awt.BorderLayout.PAGE_START);
 
-        LeftSidebar.setDividerLocation(300);
+        LeftSidebar.setDividerLocation(200);
         LeftSidebar.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         LeftSidebar.setResizeWeight(0.5);
         LeftSidebar.setToolTipText("");
+        LeftSidebar.setEnabled(false);
         LeftSidebar.setPreferredSize(new java.awt.Dimension(200, 0));
 
-        ChannelList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        ChannelList.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        ChannelList.setPreferredSize(new java.awt.Dimension(200, 100));
 
         javax.swing.GroupLayout ChannelListLayout = new javax.swing.GroupLayout(ChannelList);
         ChannelList.setLayout(ChannelListLayout);
         ChannelListLayout.setHorizontalGroup(
             ChannelListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 198, Short.MAX_VALUE)
+            .addGap(0, 196, Short.MAX_VALUE)
         );
         ChannelListLayout.setVerticalGroup(
             ChannelListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 120, Short.MAX_VALUE)
+            .addGap(0, 171, Short.MAX_VALUE)
         );
 
         LeftSidebar.setTopComponent(ChannelList);
 
-        UserList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        UserList.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        UserList.setPreferredSize(new java.awt.Dimension(200, 100));
+        UserList.setRequestFocusEnabled(false);
 
         javax.swing.GroupLayout UserListLayout = new javax.swing.GroupLayout(UserList);
         UserList.setLayout(UserListLayout);
         UserListLayout.setHorizontalGroup(
             UserListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 198, Short.MAX_VALUE)
+            .addGap(0, 196, Short.MAX_VALUE)
         );
         UserListLayout.setVerticalGroup(
             UserListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

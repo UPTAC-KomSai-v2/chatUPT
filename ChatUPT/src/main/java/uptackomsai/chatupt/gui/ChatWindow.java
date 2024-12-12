@@ -57,9 +57,11 @@ public class ChatWindow extends javax.swing.JPanel {
         chatArea = new javax.swing.JTextArea();
         inputPanel = new javax.swing.JPanel();
         attachButton = new javax.swing.JButton();
+        emojiButton = new javax.swing.JButton();
         inputField = new javax.swing.JTextField();
         sendButton = new javax.swing.JButton();
 
+        setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         setLayout(new java.awt.BorderLayout());
 
         usernameLabel.setText("User");
@@ -83,13 +85,19 @@ public class ChatWindow extends javax.swing.JPanel {
         inputPanel.setPreferredSize(new java.awt.Dimension(400, 50));
 
         attachButton.setText("Attach File");
+        attachButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         attachButton.setMargin(new java.awt.Insets(2, 5, 3, 5));
-        attachButton.setPreferredSize(new java.awt.Dimension(75, 40));
+        attachButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         inputPanel.add(attachButton);
+
+        emojiButton.setText("Emoji");
+        emojiButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        emojiButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        inputPanel.add(emojiButton);
 
         inputField.setText("Enter Message");
         inputField.setFocusTraversalPolicyProvider(true);
-        inputField.setPreferredSize(new java.awt.Dimension(200, 40));
+        inputField.setPreferredSize(new java.awt.Dimension(200, 30));
         inputField.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 inputFieldMouseClicked(evt);
@@ -106,8 +114,9 @@ public class ChatWindow extends javax.swing.JPanel {
         inputPanel.add(inputField);
 
         sendButton.setText("Send");
+        sendButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         sendButton.setMargin(new java.awt.Insets(2, 5, 3, 5));
-        sendButton.setPreferredSize(new java.awt.Dimension(50, 40));
+        sendButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         sendButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 sendButtonActionPerformed(evt);
@@ -135,7 +144,7 @@ public class ChatWindow extends javax.swing.JPanel {
     }//GEN-LAST:event_inputFieldKeyReleased
 
     private void inputFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inputFieldMouseClicked
-        chatStatus.setText("");
+        inputField.setText("");
     }//GEN-LAST:event_inputFieldMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -144,6 +153,7 @@ public class ChatWindow extends javax.swing.JPanel {
     private javax.swing.JScrollPane chatDisplayPanel;
     private javax.swing.JPanel chatHeader;
     private javax.swing.JLabel chatStatus;
+    private javax.swing.JButton emojiButton;
     private javax.swing.JTextField inputField;
     private javax.swing.JPanel inputPanel;
     private javax.swing.JButton sendButton;

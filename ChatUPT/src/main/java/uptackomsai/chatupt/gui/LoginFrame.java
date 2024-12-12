@@ -37,7 +37,7 @@ public class LoginFrame extends javax.swing.JFrame {
         usernameTextField = new javax.swing.JTextField();
         passwordPanel = new javax.swing.JPanel();
         passwordLabel = new javax.swing.JLabel();
-        passwordTextField = new javax.swing.JTextField();
+        jPasswordField1 = new javax.swing.JPasswordField();
         footPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
@@ -54,12 +54,12 @@ public class LoginFrame extends javax.swing.JFrame {
 
         getContentPane().add(headPanel, java.awt.BorderLayout.PAGE_START);
 
-        inputPanel.setLayout(new java.awt.BorderLayout());
+        inputPanel.setLayout(new java.awt.GridLayout(2, 0));
 
         usernamePanel.setPreferredSize(new java.awt.Dimension(400, 50));
         usernamePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 10));
 
-        usernameLabel.setText("Username: ");
+        usernameLabel.setText("Username ");
         usernamePanel.add(usernameLabel);
 
         usernameTextField.setText("Enter Username");
@@ -71,24 +71,18 @@ public class LoginFrame extends javax.swing.JFrame {
         });
         usernamePanel.add(usernameTextField);
 
-        inputPanel.add(usernamePanel, java.awt.BorderLayout.PAGE_START);
+        inputPanel.add(usernamePanel);
 
         passwordPanel.setPreferredSize(new java.awt.Dimension(400, 50));
         passwordPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 10));
 
-        passwordLabel.setText("Password: ");
+        passwordLabel.setText("Password");
         passwordPanel.add(passwordLabel);
 
-        passwordTextField.setText("Enter Password");
-        passwordTextField.setPreferredSize(new java.awt.Dimension(250, 30));
-        passwordTextField.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                passwordTextFieldMouseClicked(evt);
-            }
-        });
-        passwordPanel.add(passwordTextField);
+        jPasswordField1.setPreferredSize(new java.awt.Dimension(250, 30));
+        passwordPanel.add(jPasswordField1);
 
-        inputPanel.add(passwordPanel, java.awt.BorderLayout.CENTER);
+        inputPanel.add(passwordPanel);
 
         getContentPane().add(inputPanel, java.awt.BorderLayout.CENTER);
 
@@ -108,10 +102,6 @@ public class LoginFrame extends javax.swing.JFrame {
     private void usernameTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usernameTextFieldMouseClicked
         usernameTextField.setText("");
     }//GEN-LAST:event_usernameTextFieldMouseClicked
-
-    private void passwordTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_passwordTextFieldMouseClicked
-        passwordTextField.setText("");
-    }//GEN-LAST:event_passwordTextFieldMouseClicked
 
     /**
      * @param args the command line arguments
@@ -155,9 +145,9 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JPanel inputPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JPanel passwordPanel;
-    private javax.swing.JTextField passwordTextField;
     private javax.swing.JLabel usernameLabel;
     private javax.swing.JPanel usernamePanel;
     private javax.swing.JTextField usernameTextField;
