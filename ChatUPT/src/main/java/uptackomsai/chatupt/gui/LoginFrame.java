@@ -15,6 +15,9 @@ public class LoginFrame extends javax.swing.JFrame {
      */
     public LoginFrame() {
         initComponents();
+        setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+        setTitle("ChatUPT");
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -26,21 +29,89 @@ public class LoginFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        headPanel = new javax.swing.JPanel();
+        LogoLabel = new javax.swing.JLabel();
+        inputPanel = new javax.swing.JPanel();
+        usernamePanel = new javax.swing.JPanel();
+        usernameLabel = new javax.swing.JLabel();
+        usernameTextField = new javax.swing.JTextField();
+        passwordPanel = new javax.swing.JPanel();
+        passwordLabel = new javax.swing.JLabel();
+        passwordTextField = new javax.swing.JTextField();
+        footPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        headPanel.setPreferredSize(new java.awt.Dimension(400, 150));
+        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout();
+        flowLayout1.setAlignOnBaseline(true);
+        headPanel.setLayout(flowLayout1);
+
+        LogoLabel.setText("<Insert Logo Here>");
+        headPanel.add(LogoLabel);
+
+        getContentPane().add(headPanel, java.awt.BorderLayout.PAGE_START);
+
+        inputPanel.setLayout(new java.awt.BorderLayout());
+
+        usernamePanel.setPreferredSize(new java.awt.Dimension(400, 50));
+        usernamePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 10));
+
+        usernameLabel.setText("Username: ");
+        usernamePanel.add(usernameLabel);
+
+        usernameTextField.setText("Enter Username");
+        usernameTextField.setPreferredSize(new java.awt.Dimension(250, 30));
+        usernameTextField.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                usernameTextFieldMouseClicked(evt);
+            }
+        });
+        usernamePanel.add(usernameTextField);
+
+        inputPanel.add(usernamePanel, java.awt.BorderLayout.PAGE_START);
+
+        passwordPanel.setPreferredSize(new java.awt.Dimension(400, 50));
+        passwordPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 10));
+
+        passwordLabel.setText("Password: ");
+        passwordPanel.add(passwordLabel);
+
+        passwordTextField.setText("Enter Password");
+        passwordTextField.setPreferredSize(new java.awt.Dimension(250, 30));
+        passwordTextField.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                passwordTextFieldMouseClicked(evt);
+            }
+        });
+        passwordPanel.add(passwordTextField);
+
+        inputPanel.add(passwordPanel, java.awt.BorderLayout.CENTER);
+
+        getContentPane().add(inputPanel, java.awt.BorderLayout.CENTER);
+
+        footPanel.setPreferredSize(new java.awt.Dimension(400, 50));
+
+        jLabel1.setText("No Account? ");
+        footPanel.add(jLabel1);
+
+        jButton1.setLabel("Create Account Here");
+        footPanel.add(jButton1);
+
+        getContentPane().add(footPanel, java.awt.BorderLayout.PAGE_END);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void usernameTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usernameTextFieldMouseClicked
+        usernameTextField.setText("");
+    }//GEN-LAST:event_usernameTextFieldMouseClicked
+
+    private void passwordTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_passwordTextFieldMouseClicked
+        passwordTextField.setText("");
+    }//GEN-LAST:event_passwordTextFieldMouseClicked
 
     /**
      * @param args the command line arguments
@@ -78,5 +149,17 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel LogoLabel;
+    private javax.swing.JPanel footPanel;
+    private javax.swing.JPanel headPanel;
+    private javax.swing.JPanel inputPanel;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel passwordLabel;
+    private javax.swing.JPanel passwordPanel;
+    private javax.swing.JTextField passwordTextField;
+    private javax.swing.JLabel usernameLabel;
+    private javax.swing.JPanel usernamePanel;
+    private javax.swing.JTextField usernameTextField;
     // End of variables declaration//GEN-END:variables
 }

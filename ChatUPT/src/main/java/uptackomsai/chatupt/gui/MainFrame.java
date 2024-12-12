@@ -52,7 +52,7 @@ public class MainFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(800, 600));
 
-        Header.setBorder(javax.swing.BorderFactory.createLineBorder(null));
+        Header.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         Header.setPreferredSize(new java.awt.Dimension(800, 50));
 
         javax.swing.GroupLayout HeaderLayout = new javax.swing.GroupLayout(Header);
@@ -74,7 +74,7 @@ public class MainFrame extends javax.swing.JFrame {
         LeftSidebar.setToolTipText("");
         LeftSidebar.setPreferredSize(new java.awt.Dimension(200, 0));
 
-        ChannelList.setBorder(javax.swing.BorderFactory.createLineBorder(null));
+        ChannelList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout ChannelListLayout = new javax.swing.GroupLayout(ChannelList);
         ChannelList.setLayout(ChannelListLayout);
@@ -89,7 +89,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         LeftSidebar.setTopComponent(ChannelList);
 
-        UserList.setBorder(javax.swing.BorderFactory.createLineBorder(null));
+        UserList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout UserListLayout = new javax.swing.GroupLayout(UserList);
         UserList.setLayout(UserListLayout);
@@ -99,7 +99,7 @@ public class MainFrame extends javax.swing.JFrame {
         );
         UserListLayout.setVerticalGroup(
             UserListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 121, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         LeftSidebar.setRightComponent(UserList);
