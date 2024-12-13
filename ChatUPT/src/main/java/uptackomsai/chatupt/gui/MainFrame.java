@@ -130,7 +130,9 @@ public class MainFrame extends javax.swing.JFrame {
         proficonToggleButton = new javax.swing.JToggleButton();
         LeftSidebar = new javax.swing.JSplitPane();
         channelListPanel = new javax.swing.JPanel();
+        channelHeadPanel = new javax.swing.JPanel();
         channelListLabel = new javax.swing.JLabel();
+        newChannelButton = new javax.swing.JButton();
         channelScrollPane = new javax.swing.JScrollPane();
         channelsPanel = new javax.swing.JPanel();
         userListPanel = new javax.swing.JPanel();
@@ -164,7 +166,6 @@ public class MainFrame extends javax.swing.JFrame {
         popupMenu.add(Logout);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(800, 600));
         setResizable(false);
 
         headPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -210,9 +211,16 @@ public class MainFrame extends javax.swing.JFrame {
         channelListPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         channelListPanel.setLayout(new java.awt.BorderLayout());
 
+        channelHeadPanel.setLayout(new java.awt.BorderLayout());
+
         channelListLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         channelListLabel.setText("Channels");
-        channelListPanel.add(channelListLabel, java.awt.BorderLayout.PAGE_START);
+        channelHeadPanel.add(channelListLabel, java.awt.BorderLayout.WEST);
+
+        newChannelButton.setText("New Channel");
+        channelHeadPanel.add(newChannelButton, java.awt.BorderLayout.EAST);
+
+        channelListPanel.add(channelHeadPanel, java.awt.BorderLayout.NORTH);
 
         channelScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         channelScrollPane.setViewportView(channelsPanel);
@@ -318,6 +326,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel appPanel;
     private javax.swing.JLabel appiconLabel;
     private javax.swing.JLabel appnameLabel;
+    private javax.swing.JPanel channelHeadPanel;
     private javax.swing.JLabel channelListLabel;
     private javax.swing.JPanel channelListPanel;
     private javax.swing.JScrollPane channelScrollPane;
@@ -325,6 +334,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel headPanel;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JButton newChannelButton;
     private javax.swing.JScrollPane onlineUserScrollPane;
     private javax.swing.JPanel onlineUsersPanel;
     private javax.swing.JPopupMenu popupMenu;
