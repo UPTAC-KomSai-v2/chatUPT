@@ -8,6 +8,9 @@ package uptackomsai.chatupt.gui;
  *
  * @author Lei
  */
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import uptackomsai.chatupt.network.Client;
 
 import javax.swing.*;
@@ -35,7 +38,8 @@ public class ChatWindow extends javax.swing.JPanel {
                 try {
                     String message;
                     while ((message = client.receiveMessage()) != null) {
-                        chatArea.append(message + "\n");
+                        addMessageToMessagesPanel(message); // supposed to be message is in JSON format. 
+//                        chatArea.append(message + "\n");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -63,8 +67,8 @@ public class ChatWindow extends javax.swing.JPanel {
         typingIndicator = new javax.swing.JLabel();
         adminPanel = new javax.swing.JPanel();
         adminSettings = new javax.swing.JButton();
-        chatDisplayPanel = new javax.swing.JScrollPane();
-        chatArea = new javax.swing.JTextArea();
+        chatScrollPane = new javax.swing.JScrollPane();
+        messagesPanel = new javax.swing.JPanel();
         inputPanel = new javax.swing.JPanel();
         attachButton = new javax.swing.JButton();
         emojiButton = new javax.swing.JButton();
@@ -103,14 +107,14 @@ public class ChatWindow extends javax.swing.JPanel {
 
         add(headPanel, java.awt.BorderLayout.NORTH);
 
-        chatArea.setEditable(false);
-        chatArea.setColumns(20);
-        chatArea.setLineWrap(true);
-        chatArea.setRows(5);
-        chatArea.setWrapStyleWord(true);
-        chatDisplayPanel.setViewportView(chatArea);
+        chatScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        chatScrollPane.setMaximumSize(new java.awt.Dimension(750, 32767));
+        chatScrollPane.setViewportView(messagesPanel);
 
-        add(chatDisplayPanel, java.awt.BorderLayout.CENTER);
+        messagesPanel.setLayout(new javax.swing.BoxLayout(messagesPanel, javax.swing.BoxLayout.Y_AXIS));
+        chatScrollPane.setViewportView(messagesPanel);
+
+        add(chatScrollPane, java.awt.BorderLayout.CENTER);
 
         inputPanel.setPreferredSize(new java.awt.Dimension(400, 50));
 
@@ -128,11 +132,6 @@ public class ChatWindow extends javax.swing.JPanel {
         inputField.setToolTipText("Enter Message");
         inputField.setFocusTraversalPolicyProvider(true);
         inputField.setPreferredSize(new java.awt.Dimension(200, 30));
-        inputField.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                inputFieldMouseClicked(evt);
-            }
-        });
         inputField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 inputFieldKeyPressed(evt);
@@ -156,7 +155,14 @@ public class ChatWindow extends javax.swing.JPanel {
 
         add(inputPanel, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    private void scrollToBottom() {
+        SwingUtilities.invokeLater(() -> {
+            JScrollBar verticalBar = chatScrollPane.getVerticalScrollBar();
+            verticalBar.setValue(verticalBar.getMaximum());
+        });
+    }
+    
     private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
         String message = inputField.getText();
         if (!message.trim().isEmpty()) {
@@ -165,17 +171,21 @@ public class ChatWindow extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_sendButtonActionPerformed
 
+    private void addMessageToMessagesPanel(String message) { //supposed to be a JSON format parameter
+        MessagePanel messagePanel = new MessagePanel(message);
+        messagesPanel.add(messagePanel);
+        messagesPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Add spacing between panels
+        messagesPanel.revalidate(); // Recalculate layout
+        messagesPanel.repaint();   // Refresh display
+        scrollToBottom();
+    }
     private void inputFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputFieldKeyPressed
-        activeStatus.setText("is Typing...");
+        typingIndicator.setText("Typing...");
     }//GEN-LAST:event_inputFieldKeyPressed
 
     private void inputFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputFieldKeyReleased
-        activeStatus.setText("is Idle");
+        typingIndicator.setText(" ");
     }//GEN-LAST:event_inputFieldKeyReleased
-
-    private void inputFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inputFieldMouseClicked
-        inputField.setText("");
-    }//GEN-LAST:event_inputFieldMouseClicked
 
     private void adminSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminSettingsActionPerformed
         AdminFrame adminFrame = new AdminFrame(); 
@@ -187,13 +197,13 @@ public class ChatWindow extends javax.swing.JPanel {
     private javax.swing.JPanel adminPanel;
     private javax.swing.JButton adminSettings;
     private javax.swing.JButton attachButton;
-    private javax.swing.JTextArea chatArea;
-    private javax.swing.JScrollPane chatDisplayPanel;
+    private javax.swing.JScrollPane chatScrollPane;
     private javax.swing.JPanel chatheaderPanel;
     private javax.swing.JButton emojiButton;
     private javax.swing.JPanel headPanel;
     private javax.swing.JTextField inputField;
     private javax.swing.JPanel inputPanel;
+    private javax.swing.JPanel messagesPanel;
     private javax.swing.JButton sendButton;
     private javax.swing.JLabel typingIndicator;
     private javax.swing.JLabel usernameLabel;
