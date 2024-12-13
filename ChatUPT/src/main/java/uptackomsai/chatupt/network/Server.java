@@ -14,8 +14,8 @@ import java.net.*;
 import java.sql.*;
 import java.util.concurrent.*;
 import java.util.concurrent.ConcurrentHashMap;
-import uptackomsai.chatup.model.Message;
-import uptackomsai.chatup.model.User;
+import uptackomsai.chatupt.model.Message;
+import uptackomsai.chatupt.model.User;
 
 public class Server {
     private static final int PORT = 12345;

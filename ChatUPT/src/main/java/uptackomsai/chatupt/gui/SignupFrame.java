@@ -12,8 +12,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import javax.swing.JOptionPane;
-import uptackomsai.chatup.model.Message;
-import uptackomsai.chatup.model.User;
+import uptackomsai.chatupt.model.Message;
+import uptackomsai.chatupt.model.User;
 
 /**
  *
