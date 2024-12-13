@@ -17,6 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import uptackomsai.chatupt.model.Message;
 import uptackomsai.chatupt.model.User;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 public class Server {
     private static final int PORT = 12345;
     private final ExecutorService pool;
@@ -51,15 +53,21 @@ public class Server {
 
     private void connectToDatabase() {
         try {
-            String url = "jdbc:mysql://localhost:3306/chatupt";
-            String user = "root";
-            String password = "Gwapoakohihi13";
+            // Load environment variables from the .env file
+            Dotenv dotenv = Dotenv.load();
+
+            String url = dotenv.get("DB_URL");
+            String user = dotenv.get("DB_USER");
+            String password = dotenv.get("DB_PASSWORD");
 
             dbConnection = DriverManager.getConnection(url, user, password);
             System.out.println("Connected to the database.");
         } catch (SQLException e) {
             System.err.println("Database connection failed: " + e.getMessage());
             System.exit(1); // Terminate if the database connection fails
+        } catch (Exception e) {
+            System.err.println("Failed to load environment variables: " + e.getMessage());
+            System.exit(1); // Terminate if environment variables cannot be loaded
         }
     }
 
