@@ -4,6 +4,10 @@
  */
 package uptackomsai.chatupt.gui;
 
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Lei
@@ -13,10 +17,37 @@ public class MessagePanel extends javax.swing.JPanel {
     /**
      * Creates new form MessagePanel
      */
-    public MessagePanel() {
+    public MessagePanel(String message) { // Supposed to be JSON format parameter instead of string
         initComponents();
-    }
+        
+        messageTextArea.setText(message);
+        
+        // For dynamic height
+        int calculatedHeight = calculateTextAreaHeight(message, 510);
+        this.setPreferredSize(new Dimension(550,calculatedHeight+66));
 
+    }
+    
+    @Override
+    public Dimension getMaximumSize() {
+        // Restrict the maximum size of this panel
+        return new Dimension(getPreferredSize().width,getPreferredSize().height);
+    }
+    
+    private int calculateTextAreaHeight(String text, int maxWidth) {
+        // Get the FontMetrics for the JTextArea
+        FontMetrics fontMetrics = messageTextArea.getFontMetrics(messageTextArea.getFont());
+
+        // Calculate the width of the text
+        int textWidth = fontMetrics.stringWidth(text);
+
+        // Calculate the number of lines required
+        int lines = (int) Math.ceil((double) textWidth / maxWidth);
+
+        // Calculate the total height based on line height
+        int lineHeight = fontMetrics.getHeight();
+        return lines * lineHeight;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -26,19 +57,92 @@ public class MessagePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        profilePanel = new javax.swing.JPanel();
+        profilePicLabel = new javax.swing.JLabel();
+        contentPanel = new javax.swing.JPanel();
+        headcontentPanel = new javax.swing.JPanel();
+        usernameLabel = new javax.swing.JLabel();
+        timestamptLabel = new javax.swing.JLabel();
+        bodycontentPanel = new javax.swing.JPanel();
+        jSeparator1 = new javax.swing.JSeparator();
+        messageTextArea = new javax.swing.JTextArea();
+        jSeparator2 = new javax.swing.JSeparator();
+        footcontentPanel = new javax.swing.JPanel();
+        messageStatusLabel = new javax.swing.JLabel();
+        attachmentPane = new javax.swing.JScrollPane();
+        jEditorPane1 = new javax.swing.JEditorPane();
+
+        setLayout(new java.awt.BorderLayout());
+
+        profilePanel.setLayout(new java.awt.BorderLayout());
+
+        profilePicLabel.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        profilePicLabel.setText("<prof>");
+        profilePicLabel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        profilePicLabel.setPreferredSize(new java.awt.Dimension(40, 40));
+        profilePanel.add(profilePicLabel, java.awt.BorderLayout.PAGE_START);
+
+        add(profilePanel, java.awt.BorderLayout.LINE_START);
+
+        contentPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        contentPanel.setLayout(new java.awt.BorderLayout());
+
+        headcontentPanel.setPreferredSize(new java.awt.Dimension(360, 30));
+        headcontentPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEADING));
+
+        usernameLabel.setText("<username>");
+        headcontentPanel.add(usernameLabel);
+
+        timestamptLabel.setText("<timestamp>");
+        headcontentPanel.add(timestamptLabel);
+
+        contentPanel.add(headcontentPanel, java.awt.BorderLayout.PAGE_START);
+
+        bodycontentPanel.setLayout(new java.awt.BorderLayout());
+        bodycontentPanel.add(jSeparator1, java.awt.BorderLayout.PAGE_START);
+
+        messageTextArea.setEditable(false);
+        messageTextArea.setColumns(20);
+        messageTextArea.setLineWrap(true);
+        messageTextArea.setRows(5);
+        messageTextArea.setWrapStyleWord(true);
+        messageTextArea.setFocusable(false);
+        bodycontentPanel.add(messageTextArea, java.awt.BorderLayout.CENTER);
+        bodycontentPanel.add(jSeparator2, java.awt.BorderLayout.PAGE_END);
+
+        contentPanel.add(bodycontentPanel, java.awt.BorderLayout.CENTER);
+
+        footcontentPanel.setPreferredSize(new java.awt.Dimension(360, 20));
+        footcontentPanel.setLayout(new java.awt.BorderLayout());
+
+        messageStatusLabel.setText("<message_status>");
+        footcontentPanel.add(messageStatusLabel, java.awt.BorderLayout.EAST);
+
+        jEditorPane1.setEditable(false);
+        attachmentPane.setViewportView(jEditorPane1);
+
+        footcontentPanel.add(attachmentPane, java.awt.BorderLayout.LINE_START);
+
+        contentPanel.add(footcontentPanel, java.awt.BorderLayout.PAGE_END);
+
+        add(contentPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane attachmentPane;
+    private javax.swing.JPanel bodycontentPanel;
+    private javax.swing.JPanel contentPanel;
+    private javax.swing.JPanel footcontentPanel;
+    private javax.swing.JPanel headcontentPanel;
+    private javax.swing.JEditorPane jEditorPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JLabel messageStatusLabel;
+    private javax.swing.JTextArea messageTextArea;
+    private javax.swing.JPanel profilePanel;
+    private javax.swing.JLabel profilePicLabel;
+    private javax.swing.JLabel timestamptLabel;
+    private javax.swing.JLabel usernameLabel;
     // End of variables declaration//GEN-END:variables
 }

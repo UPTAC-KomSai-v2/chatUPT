@@ -5,7 +5,14 @@
 package uptackomsai.chatupt.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Scanner;//for testing
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import uptackomsai.chatupt.network.Client;
 
 /**
@@ -26,14 +33,81 @@ public class MainFrame extends javax.swing.JFrame {
         
         usernameItem.setText(username);
         
+        intializeChannelList();
+        intializeOnlineUserList();
+        intializeAllUserList();
+        
         // Initialize the ChatWindow
         ChatWindow chatWindow = new ChatWindow("localhost", 12345, username); 
         add(chatWindow, BorderLayout.CENTER);
-//        remove(chatWindow);
-//        revalidate();  // Reorganize the layout
-//        repaint();     // Refresh the UI
     }
+    
+    private void intializeChannelList(){
+        // Temporary Placeholder for channelsPanel
+        for (int i = 1; i <= 10; i++) {
+            JButton button = new JButton("Channel " + i);
+            button.setPreferredSize(new Dimension(160, 30)); // Fixed width of 95, height of 30
+            button.setMaximumSize(new Dimension(160, 30)); // Enforce max size
+            button.setToolTipText("<port_number> "+i); // Maybe we can use this value for getting what port number the conversation is
+            button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align in BoxLayout
+            // Add an ActionListener to the button
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Action to perform on button click
+                    JOptionPane.showMessageDialog(null, button.getToolTipText(), "Alert", JOptionPane.INFORMATION_MESSAGE);
+                    // user should be able open a chatWindow with for the converstion with the associated portnumber of the button
+                }
+            });
+            channelsPanel.add(button);
+            channelsPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add spacing between buttons
+        }
+    }
+    
+    private void intializeOnlineUserList(){
+        // Temporary Placeholder for onlineUsersPanel
+        for (int i = 1; i <= 7; i++) {
+            JButton button = new JButton("User " + i);
+            button.setPreferredSize(new Dimension(160, 30)); // Fixed width of 95, height of 30
+            button.setMaximumSize(new Dimension(160, 30)); // Enforce max size
+            button.setToolTipText("<port_number> "+i); // Maybe we can use this value for getting what port number the conversation is
+            button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align in BoxLayout
+            // Add an ActionListener to the button
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Action to perform on button click
+                    JOptionPane.showMessageDialog(null, button.getToolTipText(), "Alert", JOptionPane.INFORMATION_MESSAGE);
+                    // user should be able open a chatWindow with for the converstion with the associated portnumber of the button
+                }
+            });
 
+            onlineUsersPanel.add(button);
+            onlineUsersPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add spacing between buttons
+        }
+    }
+    
+    private void intializeAllUserList(){
+        // Temporary Placeholder for allUsersPanel
+        for (int i = 1; i <= 10; i++) {
+            JButton button = new JButton("User " + i);
+            button.setPreferredSize(new Dimension(160, 30)); // Fixed width of 95, height of 30
+            button.setMaximumSize(new Dimension(160, 30)); // Enforce max size
+            button.setToolTipText("<port_number> "+i); // Maybe we can use this value for getting what port number the conversation is
+            button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align in BoxLayout
+            // Add an ActionListener to the button
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Action to perform on button click
+                    JOptionPane.showMessageDialog(null, button.getToolTipText(), "Alert", JOptionPane.INFORMATION_MESSAGE);
+                    // user should be able open a chatWindow with for the converstion with the associated portnumber of the button
+                }
+            });
+            allUsersPanel.add(button);
+            allUsersPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add spacing between buttons
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -58,14 +132,18 @@ public class MainFrame extends javax.swing.JFrame {
         channelListPanel = new javax.swing.JPanel();
         channelListLabel = new javax.swing.JLabel();
         channelScrollPane = new javax.swing.JScrollPane();
+        channelsPanel = new javax.swing.JPanel();
         userListPanel = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         onlineUserScrollPane = new javax.swing.JScrollPane();
+        onlineUsersPanel = new javax.swing.JPanel();
         allUserScrollPane = new javax.swing.JScrollPane();
+        allUsersPanel = new javax.swing.JPanel();
 
         popupMenu.setComponentPopupMenu(popupMenu);
 
         usernameItem.setText("jMenuItem1");
+        usernameItem.setEnabled(false);
         popupMenu.add(usernameItem);
         popupMenu.add(jSeparator1);
 
@@ -135,6 +213,13 @@ public class MainFrame extends javax.swing.JFrame {
         channelListLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         channelListLabel.setText("Channels");
         channelListPanel.add(channelListLabel, java.awt.BorderLayout.PAGE_START);
+
+        channelScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        channelScrollPane.setViewportView(channelsPanel);
+
+        channelsPanel.setLayout(new javax.swing.BoxLayout(channelsPanel, javax.swing.BoxLayout.Y_AXIS));
+        channelScrollPane.setViewportView(channelsPanel);
+
         channelListPanel.add(channelScrollPane, java.awt.BorderLayout.CENTER);
 
         LeftSidebar.setTopComponent(channelListPanel);
@@ -142,7 +227,18 @@ public class MainFrame extends javax.swing.JFrame {
         userListPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         userListPanel.setLayout(new java.awt.BorderLayout());
 
+        onlineUserScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        onlineUsersPanel.setLayout(new javax.swing.BoxLayout(onlineUsersPanel, javax.swing.BoxLayout.Y_AXIS));
+        onlineUserScrollPane.setViewportView(onlineUsersPanel);
+
         jTabbedPane1.addTab("Online", onlineUserScrollPane);
+
+        allUserScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        allUsersPanel.setLayout(new javax.swing.BoxLayout(allUsersPanel, javax.swing.BoxLayout.Y_AXIS));
+        allUserScrollPane.setViewportView(allUsersPanel);
+
         jTabbedPane1.addTab("All", allUserScrollPane);
 
         userListPanel.add(jTabbedPane1, java.awt.BorderLayout.CENTER);
@@ -218,16 +314,19 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem Logout;
     private javax.swing.JMenuItem Settings;
     private javax.swing.JScrollPane allUserScrollPane;
+    private javax.swing.JPanel allUsersPanel;
     private javax.swing.JPanel appPanel;
     private javax.swing.JLabel appiconLabel;
     private javax.swing.JLabel appnameLabel;
     private javax.swing.JLabel channelListLabel;
     private javax.swing.JPanel channelListPanel;
     private javax.swing.JScrollPane channelScrollPane;
+    private javax.swing.JPanel channelsPanel;
     private javax.swing.JPanel headPanel;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JScrollPane onlineUserScrollPane;
+    private javax.swing.JPanel onlineUsersPanel;
     private javax.swing.JPopupMenu popupMenu;
     private javax.swing.JToggleButton proficonToggleButton;
     private javax.swing.JPanel profilePanel;
