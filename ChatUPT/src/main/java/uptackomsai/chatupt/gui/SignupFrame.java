@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package uptackomsai.chatupt.gui;
-
 import com.google.gson.Gson;
 import org.mindrot.jbcrypt.BCrypt;
 import java.net.Socket;
