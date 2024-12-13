@@ -69,8 +69,8 @@ public class MessagePanel extends javax.swing.JPanel {
         jSeparator2 = new javax.swing.JSeparator();
         footcontentPanel = new javax.swing.JPanel();
         messageStatusLabel = new javax.swing.JLabel();
-        attachmentPane = new javax.swing.JScrollPane();
-        jEditorPane1 = new javax.swing.JEditorPane();
+        attachmentPanel = new javax.swing.JPanel();
+        attachmentPane = new javax.swing.JEditorPane();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -118,10 +118,14 @@ public class MessagePanel extends javax.swing.JPanel {
         messageStatusLabel.setText("<message_status>");
         footcontentPanel.add(messageStatusLabel, java.awt.BorderLayout.EAST);
 
-        jEditorPane1.setEditable(false);
-        attachmentPane.setViewportView(jEditorPane1);
+        attachmentPanel.setLayout(new java.awt.BorderLayout());
 
-        footcontentPanel.add(attachmentPane, java.awt.BorderLayout.LINE_START);
+        attachmentPane.setEditable(false);
+        attachmentPane.setText("<attachments>");
+        attachmentPane.setEnabled(false);
+        attachmentPanel.add(attachmentPane, java.awt.BorderLayout.CENTER);
+
+        footcontentPanel.add(attachmentPanel, java.awt.BorderLayout.LINE_START);
 
         contentPanel.add(footcontentPanel, java.awt.BorderLayout.PAGE_END);
 
@@ -130,12 +134,12 @@ public class MessagePanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane attachmentPane;
+    private javax.swing.JEditorPane attachmentPane;
+    private javax.swing.JPanel attachmentPanel;
     private javax.swing.JPanel bodycontentPanel;
     private javax.swing.JPanel contentPanel;
     private javax.swing.JPanel footcontentPanel;
     private javax.swing.JPanel headcontentPanel;
-    private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JLabel messageStatusLabel;
