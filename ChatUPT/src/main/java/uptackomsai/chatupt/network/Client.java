@@ -1,15 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package uptackomsai.chatupt.network;
 
-/**
- *
- * @author Lei
- */
+import com.google.gson.Gson;
 import java.io.*;
 import java.net.*;
+import uptackomsai.chatupt.model.Message;
 
 public class Client {
     private final String serverHost;
@@ -27,7 +21,16 @@ public class Client {
         socket = new Socket(serverHost, serverPort);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
-        out.println(username);
+
+        // Create a Message object (assuming you have a Message class with "type" and "content" fields)
+        Message message = new Message("username", username);
+
+        // Convert the Message object to JSON
+        Gson gson = new Gson();
+        String jsonMessage = gson.toJson(message);
+
+        // Send the JSON message to the server
+        out.println(jsonMessage);
     }
 
     public void sendMessage(String message) {

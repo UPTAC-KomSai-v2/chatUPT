@@ -1,36 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package uptackomsai.chatupt.network;
 
-/**
- *
- * @author Lei
- */
 import java.io.*;
 import java.net.*;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.*;
-
 import com.google.gson.Gson;
-import io.github.cdimascio.dotenv.Dotenv;
-import uptackomsai.chatupt.providers.RegisterProvider;
 import uptackomsai.chatupt.model.Message;
+import uptackomsai.chatupt.providers.RegisterProvider;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
     private static final int PORT = 12345;
     private final ExecutorService pool;
     private final ConcurrentHashMap<String, PrintWriter> clients;
-    private ServerSocket serverSocket; // Added as a class member for cleanup
-    private final List<ServerModule> modules; // List of registered modules
+    private final List<ServerModule> modules;
 
     public Server() {
-        modules = new ArrayList<>();
         pool = Executors.newCachedThreadPool();
         clients = new ConcurrentHashMap<>();
+        modules = new ArrayList<>();
     }
 
     public void start() {
@@ -45,25 +34,12 @@ public class Server {
             e.printStackTrace();
         }
     }
-  
-    private void cleanup() {
-        // Close the server socket
-        if (serverSocket != null && !serverSocket.isClosed()) {
-            try {
-                serverSocket.close();
-                System.out.println("Server socket closed.");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // Shutdown the thread pool
-        pool.shutdown();
-        System.out.println("Thread pool shutdown.");
-    }
 
     private class ClientHandler implements Runnable {
         private final Socket socket;
+        private String jsonMessage;
+        private String username;
+        private PrintWriter out;
 
         public ClientHandler(Socket socket) {
             this.socket = socket;
@@ -71,20 +47,28 @@ public class Server {
 
         @Override
         public void run() {
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-
-                String initialMessage = in.readLine();
-                if (initialMessage == null) return;
-
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+                // First, read the username sent by the client
+                jsonMessage = in.readLine();
                 Gson gson = new Gson();
-                Message message = gson.fromJson(initialMessage, Message.class);
+                Message messageJson = gson.fromJson(jsonMessage, Message.class);
+                username = messageJson.getContent();
+                
+                if (username != null) {
+                    // Add the client to the clients map
+                    out = new PrintWriter(socket.getOutputStream(), true);
+                    clients.put(username, out);
+                    System.out.println(username + " connected.");
 
-                // Loop through all registered modules and invoke them
-                for (ServerModule module : modules) {
-                    module.handleRequest(message.getType(), message.getContent(), out);
+                    // Broadcast the new user connection to all clients
+                    broadcast(username, " has joined the chat.");
+
+                    String message;
+                    // Handle the incoming chat messages
+                    while ((message = in.readLine()) != null) {
+                        broadcast(username, message);
+                    }
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -100,7 +84,10 @@ public class Server {
 
         private void disconnect() {
             try {
-                clients.remove(socket.getInetAddress().getHostName());
+                if (username != null) {
+                    clients.remove(username);
+                    broadcast("Server", username + " has left the chat.");
+                }
                 socket.close();
                 System.out.println("A client disconnected.");
             } catch (IOException e) {
@@ -115,12 +102,6 @@ public class Server {
     }
 
     public static void main(String[] args) {
-//        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-//            System.out.println("Shutting down server...");
-//            new Server().cleanup();
-//        }));
-//        new Server().start();
-
         Server server = new Server();
         // Register different modules
         server.registerModule(new RegisterProvider());
