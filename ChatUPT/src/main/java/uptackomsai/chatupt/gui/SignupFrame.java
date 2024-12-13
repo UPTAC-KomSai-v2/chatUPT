@@ -4,6 +4,16 @@
  */
 package uptackomsai.chatupt.gui;
 
+import com.google.gson.Gson;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import javax.swing.JOptionPane;
+import uptackomsai.chatupt.model.Message;
+import uptackomsai.chatupt.model.User;
+
 /**
  *
  * @author Lei
@@ -168,10 +178,52 @@ public class SignupFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
-        
-        // create account backend
-        
-        this.dispose();
+        String username = usernameTextField.getText().trim();
+        String password = new String(passwordField.getPassword()).trim();
+        String confirmPassword = new String(password2Field.getPassword()).trim();
+        String email = emailTextField.getText().trim();
+
+        if (!password.equals(confirmPassword)) {
+            JOptionPane.showMessageDialog(this, "Passwords do not match!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "All fields are required!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            // Create a JSON object for user registration
+            Gson gson = new Gson();
+            User user = new User(username, password, email);
+            String userJson = gson.toJson(user);
+
+            // Connect to the server and send registration request
+            Socket socket = new Socket("localhost", 12345); // Assuming server is on localhost
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            // Create a registration request message
+            Message message = new Message("register", userJson); // Use Message structure
+            String jsonMessage = gson.toJson(message);
+
+            // Send registration request to server
+            out.println(jsonMessage);
+
+            // Read response from server
+            String response = in.readLine();
+            JOptionPane.showMessageDialog(this, response, "Server Response", JOptionPane.INFORMATION_MESSAGE);
+
+            // Close the connection
+            socket.close();
+
+            if (response.equalsIgnoreCase("Registration successful.")) {
+                this.dispose(); // Close the signup frame on success
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Failed to connect to server: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_submitButtonActionPerformed
 
     /**

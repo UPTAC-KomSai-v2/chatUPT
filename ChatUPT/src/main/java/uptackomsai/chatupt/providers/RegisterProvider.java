@@ -15,7 +15,7 @@ public class RegisterProvider implements ServerModule {
         DbBaseProvider dbProvider = new DbBaseProvider();
         Connection dbConnection = dbProvider.getConnection();
 
-        String insertUserSQL = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+        String insertUserSQL = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = dbConnection.prepareStatement(insertUserSQL)) {
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());

@@ -48,31 +48,28 @@ public class Server {
         @Override
         public void run() {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-                // First, read the username sent by the client
-                jsonMessage = in.readLine();
                 Gson gson = new Gson();
-                Message messageJson = gson.fromJson(jsonMessage, Message.class);
-                username = messageJson.getContent();
-                
-                if (username != null) {
-                    // Add the client to the clients map
-                    out = new PrintWriter(socket.getOutputStream(), true);
-                    clients.put(username, out);
-                    System.out.println(username + " connected.");
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
-                    // Broadcast the new user connection to all clients
-                    broadcast(username, " has joined the chat.");
+                String jsonMessage;
+                while ((jsonMessage = in.readLine()) != null) {
+                    // Parse the received message
+                    Message message = gson.fromJson(jsonMessage, Message.class);
 
-                    String message;
-                    // Handle the incoming chat messages
-                    while ((message = in.readLine()) != null) {
-                        broadcast(username, message);
+                    // Handle registration request
+                    if (message.getType().equals("register")) {
+                        for (ServerModule module : modules) {
+                            if (module instanceof RegisterProvider) {
+                                module.handleRequest(message.getType(), message.getContent(), out);
+                                break;
+                            }
+                        }
+                    } else {
+                        out.println("Unknown request type.");
                     }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                disconnect();
             }
         }
 
