@@ -6,7 +6,6 @@ package uptackomsai.chatupt.gui;
 
 import com.google.gson.Gson;
 import org.mindrot.jbcrypt.BCrypt;
-
 import java.net.Socket;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
