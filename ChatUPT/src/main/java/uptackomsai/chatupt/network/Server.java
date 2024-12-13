@@ -73,19 +73,78 @@ public class Server {
 
     private void setupDatabase() {
         try (Statement stmt = dbConnection.createStatement()) {
-            String clearDatabase = "DROP TABLE IF EXISTS users;";
+            // Drop all existing tables dynamically
+            try (ResultSet rs = stmt.executeQuery("SELECT table_name FROM information_schema.tables WHERE table_schema = 'chatupt';")) {
+                while (rs.next()) {
+                    String tableName = rs.getString("table_name");
+                    stmt.executeUpdate("DROP TABLE IF EXISTS " + tableName + " CASCADE;");
+                }
+            }
             String createUsersTable = """
-                    CREATE TABLE users (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        username VARCHAR(50) UNIQUE NOT NULL,
-                        password VARCHAR(255) NOT NULL,
-                        email VARCHAR(100) UNIQUE NOT NULL,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    );
-                    """;
+                CREATE TABLE users (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    username VARCHAR(50) UNIQUE NOT NULL,
+                    password VARCHAR(255) NOT NULL,
+                    email VARCHAR(100) UNIQUE NOT NULL,
+                    role ENUM('admin', 'moderator', 'user') DEFAULT 'user',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                );
+                """;
 
-            stmt.executeUpdate(clearDatabase);
+            String createChannelsTable = """
+                CREATE TABLE channels (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    name VARCHAR(100) UNIQUE NOT NULL,
+                    is_private BOOLEAN DEFAULT FALSE,
+                    created_by INT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
+                );
+                """;
+
+            String createMessagesTable = """
+                CREATE TABLE messages (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    sender_id INT NOT NULL,
+                    channel_id INT DEFAULT NULL,
+                    recipient_id INT DEFAULT NULL,
+                    content TEXT NOT NULL,
+                    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    is_read BOOLEAN DEFAULT FALSE,
+                    FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+                    FOREIGN KEY (channel_id) REFERENCES channels(id) ON DELETE CASCADE,
+                    FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE
+                );
+                """;
+
+            String createChannelMembersTable = """
+                CREATE TABLE channel_members (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    user_id INT NOT NULL,
+                    channel_id INT NOT NULL,
+                    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                    FOREIGN KEY (channel_id) REFERENCES channels(id) ON DELETE CASCADE
+                );
+                """;
+
+            String createFilesTable = """
+                CREATE TABLE files (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    message_id INT NOT NULL,
+                    file_path VARCHAR(255) NOT NULL,
+                    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (message_id) REFERENCES messages(id) ON DELETE CASCADE
+                );
+                """;
+
             stmt.executeUpdate(createUsersTable);
+            stmt.executeUpdate(createChannelsTable);
+            stmt.executeUpdate(createMessagesTable);
+            stmt.executeUpdate(createChannelMembersTable);
+            stmt.executeUpdate(createFilesTable);
 
             System.out.println("Database schema set up.");
         } catch (SQLException e) {
