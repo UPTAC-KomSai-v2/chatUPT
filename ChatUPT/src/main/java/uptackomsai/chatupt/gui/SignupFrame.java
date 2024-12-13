@@ -3,16 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package uptackomsai.chatupt.gui;
-import com.google.gson.Gson;
-import org.mindrot.jbcrypt.BCrypt;
-import java.net.Socket;
-import java.io.PrintWriter;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import javax.swing.JOptionPane;
-import uptackomsai.chatupt.model.Message;
-import uptackomsai.chatupt.model.User;
 
 /**
  *
@@ -180,56 +170,7 @@ public class SignupFrame extends javax.swing.JFrame {
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
         
         // create account backend
-        // Collect user inputs
-        String username = usernameTextField.getText().trim();
-        char[] password = passwordField.getPassword();
-        char[] confirmPassword = password2Field.getPassword();
-        String email = emailTextField.getText().trim();
-
-        // Basic validation
-        if (username.isEmpty() || password.length == 0 || confirmPassword.length == 0 || email.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill all fields.");
-            return;
-        }
-        if (!new String(password).equals(new String(confirmPassword))) {
-            JOptionPane.showMessageDialog(this, "Passwords do not match.");
-            return;
-        }
-
-        // Hash password before sending
-        String hashedPassword = BCrypt.hashpw(new String(password), BCrypt.gensalt());
-
-        // Create a User object
-        User user = new User(username, hashedPassword, email);
-
-        // Serialize the User object into JSON
-        Gson gson = new Gson();
-        String userJson = gson.toJson(user);
-
-        // Create a Message object with type "register"
-        Message message = new Message("register", userJson);
-
-        // Send the JSON object to the server
-        try (Socket socket = new Socket("localhost", 12345);
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-
-            // Serialize the Message object
-            String messageJson = gson.toJson(message);
-            out.println(messageJson);
-
-            // Wait for server response
-            String response = in.readLine();
-            System.out.println("Server response: " + response);
-
-            if ("Registration successful.".equals(response)) {
-                JOptionPane.showMessageDialog(this, "Registration successful!");
-            } else {
-                JOptionPane.showMessageDialog(this, "Registration failed: " + response);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        
         this.dispose();
     }//GEN-LAST:event_submitButtonActionPerformed
 
