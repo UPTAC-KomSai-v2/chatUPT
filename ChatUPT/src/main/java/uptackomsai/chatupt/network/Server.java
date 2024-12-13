@@ -15,8 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
+import com.google.gson.Gson;
 import io.github.cdimascio.dotenv.Dotenv;
 import uptackomsai.chatupt.providers.RegisterProvider;
+import uptackomsai.chatupt.model.Message;
 
 public class Server {
     private static final int PORT = 12345;
@@ -70,11 +72,13 @@ public class Server {
         @Override
         public void run() {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-                String username = in.readLine();
-                clients.put(username, out);
-                System.out.println(username + " connected.");
+                String initialMessage = in.readLine();
+                if (initialMessage == null) return;
+
+                Gson gson = new Gson();
+                Message message = gson.fromJson(initialMessage, Message.class);
 
                 // Loop through all registered modules and invoke them
                 for (ServerModule module : modules) {
