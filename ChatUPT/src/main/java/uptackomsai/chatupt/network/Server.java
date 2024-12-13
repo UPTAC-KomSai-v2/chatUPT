@@ -8,16 +8,12 @@ package uptackomsai.chatupt.network;
  *
  * @author Lei
  */
-import com.google.gson.Gson;
 import java.io.*;
 import java.net.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
-import java.util.concurrent.ConcurrentHashMap;
-import uptackomsai.chatupt.model.Message;
-import uptackomsai.chatupt.model.User;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import uptackomsai.chatupt.providers.RegisterProvider;
@@ -36,10 +32,7 @@ public class Server {
     }
 
     public void start() {
-        try {
-            serverSocket = new ServerSocket();
-            serverSocket.setReuseAddress(true); // Enable port reuse
-            serverSocket.bind(new InetSocketAddress(PORT));
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server started on port " + PORT);
 
             while (true) {
@@ -48,11 +41,9 @@ public class Server {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            cleanup();
         }
     }
-
+  
     private void cleanup() {
         // Close the server socket
         if (serverSocket != null && !serverSocket.isClosed()) {
@@ -81,16 +72,15 @@ public class Server {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                  PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-                String initialMessage = in.readLine();
-                if (initialMessage == null) return;
-
-                Gson gson = new Gson();
-                Message message = gson.fromJson(initialMessage, Message.class);
+                String username = in.readLine();
+                clients.put(username, out);
+                System.out.println(username + " connected.");
 
                 // Loop through all registered modules and invoke them
                 for (ServerModule module : modules) {
                     module.handleRequest(message.getType(), message.getContent(), out);
                 }
+
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -106,8 +96,7 @@ public class Server {
 
         private void disconnect() {
             try {
-                String hostname = socket.getInetAddress().getHostName();
-                clients.remove(hostname);
+                clients.remove(socket.getInetAddress().getHostName());
                 socket.close();
                 System.out.println("A client disconnected.");
             } catch (IOException e) {
