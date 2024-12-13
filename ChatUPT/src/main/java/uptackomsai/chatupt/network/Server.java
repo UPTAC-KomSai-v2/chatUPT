@@ -9,6 +9,8 @@ import uptackomsai.chatupt.providers.RegisterProvider;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
+import uptackomsai.chatupt.providers.DbBaseProvider;
+import uptackomsai.chatupt.providers.LoginProvider;
 
 public class Server {
     private static final int PORT = 12345;
@@ -64,7 +66,17 @@ public class Server {
                                 break;
                             }
                         }
-                    } else {
+                    } 
+                    else if (message.getType().equals("login")) {
+                        // Handle login
+                        for (ServerModule module : modules) {
+                            if (module instanceof LoginProvider) {
+                                module.handleRequest(message.getType(), message.getContent(), out);
+                                break;
+                            }
+                        }
+                    }
+                    else {
                         out.println("Unknown request type.");
                     }
                 }
@@ -102,6 +114,10 @@ public class Server {
         Server server = new Server();
         // Register different modules
         server.registerModule(new RegisterProvider());
+        server.registerModule(new LoginProvider());
+        
+        DbBaseProvider db = new DbBaseProvider();
+        db.setupDatabase();
         server.start();
     }
 }
