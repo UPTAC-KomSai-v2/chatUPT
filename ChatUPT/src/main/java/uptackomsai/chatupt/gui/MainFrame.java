@@ -9,10 +9,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.util.Scanner;//for testing
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import uptackomsai.chatupt.database.UserDAO;
 import uptackomsai.chatupt.network.Client;
 
 /**
@@ -66,11 +68,15 @@ public class MainFrame extends javax.swing.JFrame {
     
     private void intializeOnlineUserList(){
         // Temporary Placeholder for onlineUsersPanel
-        for (int i = 1; i <= 7; i++) {
-            JButton button = new JButton("User " + i);
+        UserDAO userDAO = new UserDAO();
+        List<String> activeUsers = userDAO.getActiveUsers();
+
+        onlineUsersPanel.removeAll(); // Clear previous list
+        for (String user : activeUsers) {
+            JButton button = new JButton(user);
             button.setPreferredSize(new Dimension(160, 30)); // Fixed width of 95, height of 30
             button.setMaximumSize(new Dimension(160, 30)); // Enforce max size
-            button.setToolTipText("<port_number> "+i); // Maybe we can use this value for getting what port number the conversation is
+            button.setToolTipText("<port_number> "+ user); // Maybe we can use this value for getting what port number the conversation is
             button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align in BoxLayout
             // Add an ActionListener to the button
             button.addActionListener(new ActionListener() {
@@ -81,19 +87,24 @@ public class MainFrame extends javax.swing.JFrame {
                     // user should be able open a chatWindow with for the converstion with the associated portnumber of the button
                 }
             });
-
+            
             onlineUsersPanel.add(button);
             onlineUsersPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add spacing between buttons
         }
+
     }
     
     private void intializeAllUserList(){
-        // Temporary Placeholder for allUsersPanel
-        for (int i = 1; i <= 10; i++) {
-            JButton button = new JButton("User " + i);
+        // Temporary Placeholder for onlineUsersPanel
+        UserDAO userDAO = new UserDAO();
+        List<String> allUsers = userDAO.getAllUsers();
+
+        allUsersPanel.removeAll(); // Clear previous list
+        for (String user : allUsers) {
+            JButton button = new JButton(user);
             button.setPreferredSize(new Dimension(160, 30)); // Fixed width of 95, height of 30
             button.setMaximumSize(new Dimension(160, 30)); // Enforce max size
-            button.setToolTipText("<port_number> "+i); // Maybe we can use this value for getting what port number the conversation is
+            button.setToolTipText("<port_number> "+ user); // Maybe we can use this value for getting what port number the conversation is
             button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align in BoxLayout
             // Add an ActionListener to the button
             button.addActionListener(new ActionListener() {
@@ -104,10 +115,12 @@ public class MainFrame extends javax.swing.JFrame {
                     // user should be able open a chatWindow with for the converstion with the associated portnumber of the button
                 }
             });
+            
             allUsersPanel.add(button);
             allUsersPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add spacing between buttons
         }
     }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
