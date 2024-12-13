@@ -5,6 +5,7 @@ import java.net.*;
 import java.util.concurrent.*;
 import com.google.gson.Gson;
 import uptackomsai.chatupt.model.Message;
+import uptackomsai.chatupt.providers.DbBaseProvider;
 import uptackomsai.chatupt.providers.RegisterProvider;
 import java.util.List;
 import java.util.ArrayList;
@@ -103,8 +104,8 @@ public class Server {
 
     public static void main(String[] args) {
         Server server = new Server();
-        // Register different modules
-        server.registerModule(new RegisterProvider());
+        DbBaseProvider db = new DbBaseProvider();
+        db.setupDatabase();
         server.start();
     }
 }

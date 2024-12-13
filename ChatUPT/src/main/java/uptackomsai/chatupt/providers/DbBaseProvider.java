@@ -9,7 +9,6 @@ public class DbBaseProvider {
 
     public DbBaseProvider(){
         connectToDatabase();
-        setupDatabase();
     }
 
     public Connection getConnection(){
@@ -36,15 +35,30 @@ public class DbBaseProvider {
         }
     }
 
-    private void setupDatabase() {
-        try (Statement stmt = dbConnection.createStatement()) {
+    public void setupDatabase() {
+        Statement stmt = null;
+        ResultSet rs = null;
+        Statement queryStmt = null;
+
+        try{
+            stmt = dbConnection.createStatement();
+            queryStmt = dbConnection.createStatement();
+
+            // Disable foreign key checks for dropping tables
+            stmt.executeUpdate("SET FOREIGN_KEY_CHECKS = 0;");
+
             // Drop all existing tables dynamically
-            try (ResultSet rs = stmt.executeQuery("SELECT table_name FROM information_schema.tables WHERE table_schema = 'chatupt';")) {
-                while (rs.next()) {
-                    String tableName = rs.getString("table_name");
-                    stmt.executeUpdate("DROP TABLE IF EXISTS " + tableName + " CASCADE;");
-                }
+            rs = queryStmt.executeQuery("SELECT table_name FROM information_schema.tables WHERE table_schema = 'chatupt';");
+
+            while (rs.next()) {
+                String tableName = rs.getString("table_name");
+                // Skip system tables like 'information_schema'
+                if (tableName.equals("information_schema")) continue;
+                stmt.executeUpdate("DROP TABLE IF EXISTS " + tableName + " CASCADE;");
+                System.out.println("Deleted all data from table: " + tableName);
             }
+
+
             String createUserTable = """
             CREATE TABLE User (
                 user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -141,9 +155,27 @@ public class DbBaseProvider {
             stmt.executeUpdate(createAttachmentTable);
             stmt.executeUpdate(createMessageStatusTable);
 
+            // Re-enable foreign key checks after table creation
+            stmt.executeUpdate("SET FOREIGN_KEY_CHECKS = 1;");
+
             System.out.println("Database schema set up.");
         } catch (SQLException e) {
             System.err.println("Failed to set up database schema: " + e.getMessage());
+        } finally {
+            // Explicitly close the ResultSet and Statement in the finally block
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (queryStmt != null){
+                    queryStmt.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Failed to close resources: " + e.getMessage());
+            }
         }
     }
 }
