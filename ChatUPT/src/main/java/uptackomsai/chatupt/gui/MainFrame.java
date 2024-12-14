@@ -7,14 +7,18 @@ package uptackomsai.chatupt.gui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Scanner;//for testing
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import uptackomsai.chatupt.network.Client;
-
+import uptackomsai.chatupt.utils.ImageLoader;
+import com.formdev.flatlaf.FlatDarkLaf;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 /**
  *
  * @author Lei
@@ -25,6 +29,8 @@ public class MainFrame extends javax.swing.JFrame {
      * Creates new form ChatFrame
      */
     public MainFrame(String username) { // for testing, I think UserID would be better instead of username
+        setResizable(false);
+        
         initComponents();
         setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         setTitle("ChatUPT");
@@ -33,13 +39,30 @@ public class MainFrame extends javax.swing.JFrame {
         
         usernameItem.setText(username);
         
+        initializeAppPanel();
         intializeChannelList();
         intializeOnlineUserList();
         intializeAllUserList();
         
-        // Initialize the ChatWindow
+        // Initialize the ChatWindow for testing
         ChatWindow chatWindow = new ChatWindow("localhost", 12345, username); 
         add(chatWindow, BorderLayout.CENTER);
+    }
+    
+    private void initializeAppPanel(){
+        appiconLabel.setIcon(new ImageIcon(
+            ImageLoader.loadImageIcon("logo.png").getImage().getScaledInstance(
+            appiconLabel.getPreferredSize().width,
+            appiconLabel.getPreferredSize().height,
+            Image.SCALE_SMOOTH)
+        ));
+        
+        appnameLabel.setIcon(new ImageIcon(
+            ImageLoader.loadImageIcon("appname.png").getImage().getScaledInstance(
+            appnameLabel.getPreferredSize().width,
+            appnameLabel.getPreferredSize().height,
+            Image.SCALE_SMOOTH)
+        ));
     }
     
     private void intializeChannelList(){
@@ -172,23 +195,30 @@ public class MainFrame extends javax.swing.JFrame {
         headPanel.setPreferredSize(new java.awt.Dimension(800, 50));
         headPanel.setLayout(new java.awt.BorderLayout());
 
+        appPanel.setBackground(new java.awt.Color(255, 255, 255));
+        appPanel.setOpaque(false);
+        appPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 3));
+
         appiconLabel.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         appiconLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        appiconLabel.setText("<logo>");
-        appiconLabel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        appiconLabel.setMaximumSize(new java.awt.Dimension(40, 14));
         appiconLabel.setPreferredSize(new java.awt.Dimension(40, 40));
         appPanel.add(appiconLabel);
 
-        appnameLabel.setText("ChatUPT");
+        appnameLabel.setPreferredSize(new java.awt.Dimension(187, 40));
         appPanel.add(appnameLabel);
 
         headPanel.add(appPanel, java.awt.BorderLayout.LINE_START);
+
+        profilePanel.setBackground(new java.awt.Color(255, 255, 255));
+        profilePanel.setOpaque(false);
 
         proficonToggleButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         proficonToggleButton.setText("<prof>");
         proficonToggleButton.setBorder(null);
         proficonToggleButton.setComponentPopupMenu(popupMenu);
         proficonToggleButton.setInheritsPopupMenu(true);
+        proficonToggleButton.setOpaque(true);
         proficonToggleButton.setPreferredSize(new java.awt.Dimension(40, 40));
         proficonToggleButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -205,7 +235,6 @@ public class MainFrame extends javax.swing.JFrame {
         LeftSidebar.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         LeftSidebar.setResizeWeight(0.5);
         LeftSidebar.setToolTipText("");
-        LeftSidebar.setEnabled(false);
         LeftSidebar.setPreferredSize(new java.awt.Dimension(200, 0));
 
         channelListPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -308,7 +337,13 @@ public class MainFrame extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-
+        try {
+            // Set the FlatLaf Look and Feel
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

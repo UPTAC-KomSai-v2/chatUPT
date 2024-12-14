@@ -14,7 +14,6 @@ public class SignupFrame extends javax.swing.JFrame {
      * Creates new form SignupFrame
      */
     public SignupFrame() {
-        setUndecorated(true); 
         setResizable(false);
         
         initComponents();
@@ -164,13 +163,14 @@ public class SignupFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        new LoginFrame().setVisible(true); 
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
         
         // create account backend
-        
+        new LoginFrame().setVisible(true); 
         this.dispose();
     }//GEN-LAST:event_submitButtonActionPerformed
 
