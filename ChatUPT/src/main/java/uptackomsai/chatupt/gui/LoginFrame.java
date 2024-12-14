@@ -8,16 +8,31 @@ package uptackomsai.chatupt.gui;
  *
  * @author Lei
  */
+import com.formdev.flatlaf.FlatDarkLaf;
+import java.awt.Image;
+import javax.swing.ImageIcon;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import uptackomsai.chatupt.utils.ImageLoader;
 public class LoginFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form LoginFrame
      */
     public LoginFrame() {
+        setResizable(false);
+        
         initComponents();
         setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
-        setTitle("ChatUPT");
+        setTitle("Login Form");
         setLocationRelativeTo(null);
+        
+        logoLabel.setIcon(new ImageIcon(
+            ImageLoader.loadImageIcon("login_slogan.png").getImage().getScaledInstance(
+            logoLabel.getPreferredSize().width,
+            logoLabel.getPreferredSize().height,
+            Image.SCALE_SMOOTH)
+        ));
     }
 
     /**
@@ -30,42 +45,41 @@ public class LoginFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         headPanel = new javax.swing.JPanel();
-        LogoLabel = new javax.swing.JLabel();
+        logoLabel = new javax.swing.JLabel();
         inputPanel = new javax.swing.JPanel();
-        usernamePanel = new javax.swing.JPanel();
+        center = new javax.swing.JPanel();
         usernameLabel = new javax.swing.JLabel();
         usernameTextField = new javax.swing.JTextField();
-        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(2, 0), new java.awt.Dimension(2, 0), new java.awt.Dimension(2, 32767));
-        passwordPanel = new javax.swing.JPanel();
         passwordLabel = new javax.swing.JLabel();
         jPasswordField1 = new javax.swing.JPasswordField();
-        footPanel = new javax.swing.JPanel();
         loginButton = new javax.swing.JButton();
+        leftPadding = new javax.swing.JPanel();
+        rightPadding = new javax.swing.JPanel();
+        footPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         signupButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        headPanel.setBackground(new java.awt.Color(255, 255, 255));
         headPanel.setPreferredSize(new java.awt.Dimension(400, 150));
-        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 30);
-        flowLayout1.setAlignOnBaseline(true);
-        headPanel.setLayout(flowLayout1);
+        headPanel.setLayout(new java.awt.BorderLayout());
 
-        LogoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        LogoLabel.setText("<Logo>");
-        LogoLabel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        LogoLabel.setPreferredSize(new java.awt.Dimension(100, 100));
-        headPanel.add(LogoLabel);
+        logoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        logoLabel.setPreferredSize(new java.awt.Dimension(450, 150));
+        headPanel.add(logoLabel, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(headPanel, java.awt.BorderLayout.PAGE_START);
 
-        inputPanel.setPreferredSize(new java.awt.Dimension(400, 80));
-        inputPanel.setLayout(new java.awt.GridLayout(2, 0));
+        inputPanel.setPreferredSize(new java.awt.Dimension(400, 175));
+        inputPanel.setLayout(new java.awt.BorderLayout());
 
-        usernamePanel.setPreferredSize(new java.awt.Dimension(400, 50));
-        usernamePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 10));
+        center.setPreferredSize(new java.awt.Dimension(250, 175));
+        center.setLayout(new java.awt.GridLayout(5, 0, 0, 5));
 
         usernameLabel.setText("Username ");
-        usernamePanel.add(usernameLabel);
+        usernameLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        center.add(usernameLabel);
 
         usernameTextField.setPreferredSize(new java.awt.Dimension(250, 30));
         usernameTextField.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -73,25 +87,14 @@ public class LoginFrame extends javax.swing.JFrame {
                 usernameTextFieldMouseClicked(evt);
             }
         });
-        usernamePanel.add(usernameTextField);
-        usernamePanel.add(filler2);
-
-        inputPanel.add(usernamePanel);
-
-        passwordPanel.setPreferredSize(new java.awt.Dimension(400, 50));
-        passwordPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 10));
+        center.add(usernameTextField);
 
         passwordLabel.setText("Password");
-        passwordPanel.add(passwordLabel);
+        passwordLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        center.add(passwordLabel);
 
         jPasswordField1.setPreferredSize(new java.awt.Dimension(250, 30));
-        passwordPanel.add(jPasswordField1);
-
-        inputPanel.add(passwordPanel);
-
-        getContentPane().add(inputPanel, java.awt.BorderLayout.CENTER);
-
-        footPanel.setPreferredSize(new java.awt.Dimension(400, 50));
+        center.add(jPasswordField1);
 
         loginButton.setText("Login");
         loginButton.addActionListener(new java.awt.event.ActionListener() {
@@ -99,7 +102,23 @@ public class LoginFrame extends javax.swing.JFrame {
                 loginButtonActionPerformed(evt);
             }
         });
-        footPanel.add(loginButton);
+        center.add(loginButton);
+
+        inputPanel.add(center, java.awt.BorderLayout.CENTER);
+
+        leftPadding.setPreferredSize(new java.awt.Dimension(80, 100));
+        leftPadding.setRequestFocusEnabled(false);
+        inputPanel.add(leftPadding, java.awt.BorderLayout.WEST);
+
+        rightPadding.setPreferredSize(new java.awt.Dimension(80, 10));
+        inputPanel.add(rightPadding, java.awt.BorderLayout.EAST);
+
+        getContentPane().add(inputPanel, java.awt.BorderLayout.CENTER);
+
+        footPanel.setPreferredSize(new java.awt.Dimension(400, 50));
+
+        jLabel1.setText("No Account?");
+        footPanel.add(jLabel1);
 
         signupButton.setText("Signup");
         signupButton.addActionListener(new java.awt.event.ActionListener() {
@@ -121,7 +140,7 @@ public class LoginFrame extends javax.swing.JFrame {
     private void signupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signupButtonActionPerformed
         SignupFrame signupFrame = new SignupFrame(); // Open SettingsFrame
         signupFrame.setVisible(true); // Show the new frame
-//        this.dispose(); 
+        this.dispose(); 
     }//GEN-LAST:event_signupButtonActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
@@ -156,7 +175,14 @@ public class LoginFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(LoginFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        
+        try {
+            // Set the FlatLaf Look and Feel
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -166,18 +192,19 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel LogoLabel;
-    private javax.swing.Box.Filler filler2;
+    private javax.swing.JPanel center;
     private javax.swing.JPanel footPanel;
     private javax.swing.JPanel headPanel;
     private javax.swing.JPanel inputPanel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPasswordField jPasswordField1;
+    private javax.swing.JPanel leftPadding;
     private javax.swing.JButton loginButton;
+    private javax.swing.JLabel logoLabel;
     private javax.swing.JLabel passwordLabel;
-    private javax.swing.JPanel passwordPanel;
+    private javax.swing.JPanel rightPadding;
     private javax.swing.JButton signupButton;
     private javax.swing.JLabel usernameLabel;
-    private javax.swing.JPanel usernamePanel;
     private javax.swing.JTextField usernameTextField;
     // End of variables declaration//GEN-END:variables
 }

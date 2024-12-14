@@ -10,4 +10,19 @@
         <maven.compiler.release>21</maven.compiler.release>
         <exec.mainClass>uptackomsai.chatupt.ChatUPT</exec.mainClass>
     </properties>
+    <build>
+        <resources>
+            <!-- Default resources directory -->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>3.5.4</version>
+        </dependency>
+    </dependencies>
 </project>

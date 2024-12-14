@@ -4,6 +4,13 @@
  */
 package uptackomsai.chatupt.gui;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import java.awt.Image;
+import javax.swing.ImageIcon;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import uptackomsai.chatupt.utils.ImageLoader;
+
 /**
  *
  * @author Lei
@@ -14,14 +21,19 @@ public class SignupFrame extends javax.swing.JFrame {
      * Creates new form SignupFrame
      */
     public SignupFrame() {
-        setUndecorated(true); 
         setResizable(false);
         
         initComponents();
         setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
-        setTitle("ChatUPT");
+        setTitle("Signup Form");
         setLocationRelativeTo(null);
         
+        profilepicLabel.setIcon(new ImageIcon(
+            ImageLoader.loadImageIcon("default.png").getImage().getScaledInstance(
+            profilepicLabel.getPreferredSize().width,
+            profilepicLabel.getPreferredSize().height,
+            Image.SCALE_SMOOTH)
+        ));
     }
 
     /**
@@ -34,28 +46,26 @@ public class SignupFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         borderPanel = new javax.swing.JPanel();
-        headPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         profilepicPanel = new javax.swing.JPanel();
         profilepicPreview = new javax.swing.JPanel();
         profilepicLabel = new javax.swing.JLabel();
         profilepicButton = new javax.swing.JButton();
         inputPanel = new javax.swing.JPanel();
-        usernamePanel = new javax.swing.JPanel();
+        center = new javax.swing.JPanel();
         usernameLabel = new javax.swing.JLabel();
         usernameTextField = new javax.swing.JTextField();
-        passwordPanel = new javax.swing.JPanel();
         passwordLabel = new javax.swing.JLabel();
         passwordField = new javax.swing.JPasswordField();
-        password2Panel = new javax.swing.JPanel();
         password2Label = new javax.swing.JLabel();
         password2Field = new javax.swing.JPasswordField();
-        emailPanel = new javax.swing.JPanel();
         emailLabel = new javax.swing.JLabel();
         emailTextField = new javax.swing.JTextField();
         actionsPanel = new javax.swing.JPanel();
-        submitButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
+        submitButton = new javax.swing.JButton();
+        leftPadding = new javax.swing.JPanel();
+        rightPadding = new javax.swing.JPanel();
+        footerPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(400, 400));
@@ -63,19 +73,11 @@ public class SignupFrame extends javax.swing.JFrame {
         borderPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         borderPanel.setLayout(new java.awt.BorderLayout());
 
-        headPanel.setPreferredSize(new java.awt.Dimension(400, 50));
-
-        jLabel1.setText("Signup Form");
-        headPanel.add(jLabel1);
-
-        borderPanel.add(headPanel, java.awt.BorderLayout.PAGE_START);
-
         profilepicPreview.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         profilepicPreview.setToolTipText("");
         profilepicPreview.setLayout(new java.awt.BorderLayout());
 
         profilepicLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        profilepicLabel.setText("<profile pic>");
         profilepicLabel.setPreferredSize(new java.awt.Dimension(100, 100));
         profilepicPreview.add(profilepicLabel, java.awt.BorderLayout.CENTER);
 
@@ -87,55 +89,54 @@ public class SignupFrame extends javax.swing.JFrame {
 
         profilepicPanel.add(profilepicPreview);
 
-        borderPanel.add(profilepicPanel, java.awt.BorderLayout.CENTER);
+        borderPanel.add(profilepicPanel, java.awt.BorderLayout.PAGE_START);
 
-        inputPanel.setPreferredSize(new java.awt.Dimension(400, 200));
-        inputPanel.setLayout(new java.awt.GridLayout(5, 1));
+        inputPanel.setMinimumSize(new java.awt.Dimension(220, 315));
+        inputPanel.setPreferredSize(new java.awt.Dimension(400, 315));
+        inputPanel.setLayout(new java.awt.BorderLayout());
 
-        usernamePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.TRAILING));
+        center.setPreferredSize(new java.awt.Dimension(400, 315));
+        center.setLayout(new java.awt.GridLayout(9, 1, 0, 5));
 
         usernameLabel.setText("Username");
-        usernamePanel.add(usernameLabel);
+        usernameLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        center.add(usernameLabel);
 
-        usernameTextField.setText("Enter Username");
         usernameTextField.setPreferredSize(new java.awt.Dimension(250, 30));
-        usernamePanel.add(usernameTextField);
-
-        inputPanel.add(usernamePanel);
-
-        passwordPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.TRAILING));
+        center.add(usernameTextField);
 
         passwordLabel.setText("Password");
-        passwordPanel.add(passwordLabel);
+        passwordLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        center.add(passwordLabel);
 
         passwordField.setToolTipText("Enter Your Password");
         passwordField.setPreferredSize(new java.awt.Dimension(250, 30));
-        passwordPanel.add(passwordField);
-
-        inputPanel.add(passwordPanel);
-
-        password2Panel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.TRAILING));
+        center.add(passwordField);
 
         password2Label.setText("Confirm Password");
-        password2Panel.add(password2Label);
+        password2Label.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        center.add(password2Label);
 
         password2Field.setPreferredSize(new java.awt.Dimension(250, 30));
-        password2Panel.add(password2Field);
-
-        inputPanel.add(password2Panel);
-
-        emailPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.TRAILING));
+        center.add(password2Field);
 
         emailLabel.setText("Email Address");
-        emailPanel.add(emailLabel);
+        emailLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        center.add(emailLabel);
 
-        emailTextField.setText("user@gmail.com");
         emailTextField.setPreferredSize(new java.awt.Dimension(250, 30));
-        emailPanel.add(emailTextField);
-
-        inputPanel.add(emailPanel);
+        center.add(emailTextField);
 
         actionsPanel.setPreferredSize(new java.awt.Dimension(400, 50));
+        actionsPanel.setLayout(new java.awt.BorderLayout());
+
+        cancelButton.setText("Cancel Signup");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+        actionsPanel.add(cancelButton, java.awt.BorderLayout.WEST);
 
         submitButton.setText("Submit Form");
         submitButton.setToolTipText("");
@@ -144,19 +145,22 @@ public class SignupFrame extends javax.swing.JFrame {
                 submitButtonActionPerformed(evt);
             }
         });
-        actionsPanel.add(submitButton);
+        actionsPanel.add(submitButton, java.awt.BorderLayout.EAST);
 
-        cancelButton.setText("Cancel Signup");
-        cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelButtonActionPerformed(evt);
-            }
-        });
-        actionsPanel.add(cancelButton);
+        center.add(actionsPanel);
 
-        inputPanel.add(actionsPanel);
+        inputPanel.add(center, java.awt.BorderLayout.CENTER);
 
-        borderPanel.add(inputPanel, java.awt.BorderLayout.PAGE_END);
+        leftPadding.setPreferredSize(new java.awt.Dimension(80, 10));
+        inputPanel.add(leftPadding, java.awt.BorderLayout.WEST);
+
+        rightPadding.setPreferredSize(new java.awt.Dimension(80, 10));
+        inputPanel.add(rightPadding, java.awt.BorderLayout.EAST);
+
+        borderPanel.add(inputPanel, java.awt.BorderLayout.CENTER);
+
+        footerPanel.setPreferredSize(new java.awt.Dimension(10, 30));
+        borderPanel.add(footerPanel, java.awt.BorderLayout.SOUTH);
 
         getContentPane().add(borderPanel, java.awt.BorderLayout.CENTER);
 
@@ -164,13 +168,14 @@ public class SignupFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        new LoginFrame().setVisible(true); 
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
         
         // create account backend
-        
+        new LoginFrame().setVisible(true); 
         this.dispose();
     }//GEN-LAST:event_submitButtonActionPerformed
 
@@ -200,7 +205,13 @@ public class SignupFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(SignupFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        
+        try {
+            // Set the FlatLaf Look and Feel
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -213,25 +224,23 @@ public class SignupFrame extends javax.swing.JFrame {
     private javax.swing.JPanel actionsPanel;
     private javax.swing.JPanel borderPanel;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JPanel center;
     private javax.swing.JLabel emailLabel;
-    private javax.swing.JPanel emailPanel;
     private javax.swing.JTextField emailTextField;
-    private javax.swing.JPanel headPanel;
+    private javax.swing.JPanel footerPanel;
     private javax.swing.JPanel inputPanel;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel leftPadding;
     private javax.swing.JPasswordField password2Field;
     private javax.swing.JLabel password2Label;
-    private javax.swing.JPanel password2Panel;
     private javax.swing.JPasswordField passwordField;
     private javax.swing.JLabel passwordLabel;
-    private javax.swing.JPanel passwordPanel;
     private javax.swing.JButton profilepicButton;
     private javax.swing.JLabel profilepicLabel;
     private javax.swing.JPanel profilepicPanel;
     private javax.swing.JPanel profilepicPreview;
+    private javax.swing.JPanel rightPadding;
     private javax.swing.JButton submitButton;
     private javax.swing.JLabel usernameLabel;
-    private javax.swing.JPanel usernamePanel;
     private javax.swing.JTextField usernameTextField;
     // End of variables declaration//GEN-END:variables
 }

@@ -121,8 +121,15 @@
         </Constraint>
       </Constraints>
 
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+        <Property name="alignment" type="int" value="2"/>
+      </Layout>
       <SubComponents>
+        <Component class="javax.swing.JEditorPane" name="attachmentPane">
+          <Properties>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+        </Component>
         <Component class="javax.swing.JButton" name="attachButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Attach File"/>
@@ -130,13 +137,6 @@
             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
               <Insets value="[2, 5, 3, 5]"/>
             </Property>
-            <Property name="verticalTextPosition" type="int" value="3"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="emojiButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Emoji"/>
-            <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
         </Component>

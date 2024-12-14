@@ -4,6 +4,10 @@
  */
 package uptackomsai.chatupt.gui;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 /**
  *
  * @author Lei
@@ -108,6 +112,7 @@ public class AdminFrame extends javax.swing.JFrame {
         adminListPanel.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         adminActionPanel.setPreferredSize(new java.awt.Dimension(396, 40));
+        adminActionPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
         removeAdminButton.setText("Remove Admin");
         adminActionPanel.add(removeAdminButton);
@@ -128,6 +133,7 @@ public class AdminFrame extends javax.swing.JFrame {
         memberListPanel.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
         memberActionPanel.setPreferredSize(new java.awt.Dimension(396, 40));
+        memberActionPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
         newadminButton.setText("Add as Admin");
         memberActionPanel.add(newadminButton);
@@ -151,6 +157,7 @@ public class AdminFrame extends javax.swing.JFrame {
         requestListPanel.add(jScrollPane3, java.awt.BorderLayout.CENTER);
 
         requestActionPanel.setPreferredSize(new java.awt.Dimension(396, 40));
+        requestActionPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
         acceptRequestButton.setText("Accept Request");
         requestActionPanel.add(acceptRequestButton);
@@ -201,7 +208,12 @@ public class AdminFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(AdminFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        try {
+            // Set the FlatLaf Look and Feel
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
