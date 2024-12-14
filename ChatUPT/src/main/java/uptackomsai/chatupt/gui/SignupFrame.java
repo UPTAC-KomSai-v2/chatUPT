@@ -4,8 +4,11 @@
  */
 package uptackomsai.chatupt.gui;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Image;
 import javax.swing.ImageIcon;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import uptackomsai.chatupt.utils.ImageLoader;
 
 /**
@@ -202,7 +205,13 @@ public class SignupFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(SignupFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        
+        try {
+            // Set the FlatLaf Look and Feel
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

@@ -70,8 +70,8 @@ public class ChatWindow extends javax.swing.JPanel {
         chatScrollPane = new javax.swing.JScrollPane();
         messagesPanel = new javax.swing.JPanel();
         inputPanel = new javax.swing.JPanel();
+        attachmentPane = new javax.swing.JEditorPane();
         attachButton = new javax.swing.JButton();
-        emojiButton = new javax.swing.JButton();
         inputField = new javax.swing.JTextField();
         sendButton = new javax.swing.JButton();
 
@@ -117,17 +117,16 @@ public class ChatWindow extends javax.swing.JPanel {
         add(chatScrollPane, java.awt.BorderLayout.CENTER);
 
         inputPanel.setPreferredSize(new java.awt.Dimension(400, 50));
+        inputPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        attachmentPane.setEnabled(false);
+        inputPanel.add(attachmentPane);
 
         attachButton.setText("Attach File");
         attachButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         attachButton.setMargin(new java.awt.Insets(2, 5, 3, 5));
         attachButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         inputPanel.add(attachButton);
-
-        emojiButton.setText("Emoji");
-        emojiButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        emojiButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        inputPanel.add(emojiButton);
 
         inputField.setToolTipText("Enter Message");
         inputField.setFocusTraversalPolicyProvider(true);
@@ -197,9 +196,9 @@ public class ChatWindow extends javax.swing.JPanel {
     private javax.swing.JPanel adminPanel;
     private javax.swing.JButton adminSettings;
     private javax.swing.JButton attachButton;
+    private javax.swing.JEditorPane attachmentPane;
     private javax.swing.JScrollPane chatScrollPane;
     private javax.swing.JPanel chatheaderPanel;
-    private javax.swing.JButton emojiButton;
     private javax.swing.JPanel headPanel;
     private javax.swing.JTextField inputField;
     private javax.swing.JPanel inputPanel;

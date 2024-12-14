@@ -58,8 +58,8 @@ public class MainFrame extends javax.swing.JFrame {
         intializeAllUserList();
         
         // Initialize the ChatWindow for testing
-        //ChatWindow chatWindow = new ChatWindow("localhost", 12345, username); 
-        //add(chatWindow, BorderLayout.CENTER);
+        ChatWindow chatWindow = new ChatWindow("localhost", 12345, username); 
+        add(chatWindow, BorderLayout.CENTER);
     }
     
     private void initializeAppPanel(){

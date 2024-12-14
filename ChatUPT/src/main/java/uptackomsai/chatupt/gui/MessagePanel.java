@@ -6,7 +6,10 @@ package uptackomsai.chatupt.gui;
 
 import java.awt.Dimension;
 import java.awt.FontMetrics;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import uptackomsai.chatupt.utils.ImageLoader;
 
 /**
  *
@@ -22,6 +25,12 @@ public class MessagePanel extends javax.swing.JPanel {
         
         messageTextArea.setText(message);
         
+        profilePicLabel.setIcon(new ImageIcon(
+            ImageLoader.loadImageIcon("default.png").getImage().getScaledInstance(
+            profilePicLabel.getPreferredSize().width,
+            profilePicLabel.getPreferredSize().height,
+            Image.SCALE_SMOOTH)
+        ));
         // For dynamic height
         int calculatedHeight = calculateTextAreaHeight(message, 510);
         this.setPreferredSize(new Dimension(550,calculatedHeight+66));
@@ -77,14 +86,11 @@ public class MessagePanel extends javax.swing.JPanel {
         profilePanel.setLayout(new java.awt.BorderLayout());
 
         profilePicLabel.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-        profilePicLabel.setText("<prof>");
-        profilePicLabel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         profilePicLabel.setPreferredSize(new java.awt.Dimension(40, 40));
         profilePanel.add(profilePicLabel, java.awt.BorderLayout.PAGE_START);
 
         add(profilePanel, java.awt.BorderLayout.LINE_START);
 
-        contentPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         contentPanel.setLayout(new java.awt.BorderLayout());
 
         headcontentPanel.setPreferredSize(new java.awt.Dimension(360, 30));
@@ -106,6 +112,7 @@ public class MessagePanel extends javax.swing.JPanel {
         messageTextArea.setLineWrap(true);
         messageTextArea.setRows(5);
         messageTextArea.setWrapStyleWord(true);
+        messageTextArea.setBorder(null);
         messageTextArea.setFocusable(false);
         bodycontentPanel.add(messageTextArea, java.awt.BorderLayout.CENTER);
         bodycontentPanel.add(jSeparator2, java.awt.BorderLayout.PAGE_END);
