@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import javax.swing.JOptionPane;
-import uptackomsai.chatupt.model.Message;
+import uptackomsai.chatupt.model.Request;
 import uptackomsai.chatupt.model.User;
 
 /**
@@ -81,24 +81,21 @@ public class LoginFrame extends javax.swing.JFrame {
 
         getContentPane().add(headPanel, java.awt.BorderLayout.PAGE_START);
 
-        inputPanel.setPreferredSize(new java.awt.Dimension(400, 175));
+        inputPanel.setPreferredSize(new java.awt.Dimension(400, 150));
         inputPanel.setLayout(new java.awt.BorderLayout());
 
-        center.setPreferredSize(new java.awt.Dimension(250, 175));
+        center.setPreferredSize(new java.awt.Dimension(250, 150));
         center.setLayout(new java.awt.GridLayout(5, 0, 0, 5));
 
+        usernameLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         usernameLabel.setText("Username ");
         usernameLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         center.add(usernameLabel);
 
         usernameTextField.setPreferredSize(new java.awt.Dimension(250, 30));
-        usernameTextField.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                usernameTextFieldMouseClicked(evt);
-            }
-        });
         center.add(usernameTextField);
 
+        passwordLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         passwordLabel.setText("Password");
         passwordLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         center.add(passwordLabel);
@@ -143,10 +140,6 @@ public class LoginFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void usernameTextFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usernameTextFieldMouseClicked
-        usernameTextField.setText("");
-    }//GEN-LAST:event_usernameTextFieldMouseClicked
-
     private void signupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signupButtonActionPerformed
         SignupFrame signupFrame = new SignupFrame(); // Open SettingsFrame
         signupFrame.setVisible(true); // Show the new frame
@@ -170,7 +163,7 @@ public class LoginFrame extends javax.swing.JFrame {
             Gson gson = new Gson();
             User user = new User(username, password, null); // Email is not required for login
             String userJson = gson.toJson(user);
-            Message message = new Message("login", userJson); // Use the Message class for consistency
+            Request message = new Request("login", userJson); // Use the Message class for consistency
             String jsonMessage = gson.toJson(message);
 
             // Send login request
@@ -181,12 +174,12 @@ public class LoginFrame extends javax.swing.JFrame {
 
             if (response == null) {
                 JOptionPane.showMessageDialog(this, "No response from server.", "Error", JOptionPane.ERROR_MESSAGE);
-            } else if (response.equalsIgnoreCase("Login successful")) {
-                MainFrame mainFrame = new MainFrame(username);
+            } else if (response.equalsIgnoreCase("Invalid username or password")) {
+                JOptionPane.showMessageDialog(this, response, "Login Failed", JOptionPane.ERROR_MESSAGE);
+            } else {
+                MainFrame mainFrame = new MainFrame(Integer.parseInt(response)); // userID parameter from response
                 mainFrame.setVisible(true);
                 this.dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, response, "Login Failed", JOptionPane.ERROR_MESSAGE);
             }
         } catch (IOException e) {
             e.printStackTrace();

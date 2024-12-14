@@ -1,10 +1,10 @@
 package uptackomsai.chatupt.model;
 
-public class Message {
+public class Request {
     private String type; // "register" or "connect"
     private String content;
 
-    public Message(String type, String content) {
+    public Request(String type, String content) {
         this.type = type;
         this.content = content;
     }

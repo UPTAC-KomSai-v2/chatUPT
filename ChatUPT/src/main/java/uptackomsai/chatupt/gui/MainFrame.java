@@ -17,7 +17,17 @@ import javax.swing.JOptionPane;
 import uptackomsai.chatupt.network.Client;
 import uptackomsai.chatupt.utils.ImageLoader;
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.google.gson.Gson;
 import java.awt.GridLayout;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -28,16 +38,24 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
+import org.mindrot.jbcrypt.BCrypt;
+import uptackomsai.chatupt.model.Channel;
+import uptackomsai.chatupt.model.Request;
+import uptackomsai.chatupt.model.User;
+import uptackomsai.chatupt.providers.DbBaseProvider;
+import uptackomsai.chatupt.utils.DatabaseUtils;
 /**
  *
  * @author Lei
  */
 public class MainFrame extends javax.swing.JFrame {
-    private int userID;
+    private final int userID;
     /**
      * Creates new form ChatFrame
+     * @param userID
      */
-    public MainFrame(String username) { // UserID is received here instead of username
+    public MainFrame(int userID) { // UserID is received here instead of username
+        this.userID = userID;
         setResizable(false);
         initComponents();
         setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
@@ -49,7 +67,7 @@ public class MainFrame extends javax.swing.JFrame {
         // stored in the server's database. Then the initializeProfilePanel() should set the usernameItem's text,
         // proficonToggleButton's icon, and add/open the lastvisisted ChatWindow (unless 0, meaning new user).
         
-        usernameItem.setText(username);
+//        usernameItem.setText(username);
         
         initializeAppPanel();
         initializeProfilePanel();
@@ -58,8 +76,8 @@ public class MainFrame extends javax.swing.JFrame {
         intializeAllUserList();
         
         // Initialize the ChatWindow for testing
-        ChatWindow chatWindow = new ChatWindow("localhost", 12345, username); 
-        add(chatWindow, BorderLayout.CENTER);
+//        ChatWindow chatWindow = new ChatWindow("localhost", 12345, username); 
+//        add(chatWindow, BorderLayout.CENTER);
     }
     
     private void initializeAppPanel(){
@@ -79,8 +97,24 @@ public class MainFrame extends javax.swing.JFrame {
     }
     
     private void initializeProfilePanel(){
+        ResultSet user;
+        String profile_path="default.png";
+        DatabaseUtils dbUtils = new DatabaseUtils();
+        //int lastVisitedChatId=0;
+        try {
+            user = dbUtils.getUserById(userID);
+            if (user.next()) {
+                profile_path = user.getString("profile_path");
+                usernameItem.setText(user.getString("username"));
+                // Initialize the ChatWindow here, user.getString("username"))
+                //lastVisitedChatId = user.getInt("last_visited");
+            }
+            user.close(); // Always close ResultSet
+        } catch (SQLException e) {
+            System.err.println("Error fetching user: " + e.getMessage());
+        }
         proficonToggleButton.setIcon(new ImageIcon(
-            ImageLoader.loadImageIcon("default.png").getImage().getScaledInstance(
+            ImageLoader.loadImageIcon(profile_path).getImage().getScaledInstance(
             proficonToggleButton.getPreferredSize().width,
             proficonToggleButton.getPreferredSize().height,
             Image.SCALE_SMOOTH)
@@ -89,68 +123,68 @@ public class MainFrame extends javax.swing.JFrame {
     
     private void intializeChannelList(){
         // Temporary Placeholder for channelsPanel
-        for (int i = 1; i <= 2; i++) {
-            addChannelToChannelPanel("Channel "+i,i);
-        }
+//        for (int i = 1; i <= 2; i++) {
+//            addChannelToChannelPanel("Channel "+i,i);
+//        }
     }
     
     private void intializeOnlineUserList(){
         // Temporary Placeholder for onlineUsersPanel
-        for (int i = 1; i <= 7; i++) {
-            JButton button = new JButton("User " + i);
-            button.setPreferredSize(new Dimension(160, 30)); // Fixed width of 95, height of 30
-            button.setMaximumSize(new Dimension(160, 30)); // Enforce max size
-            button.setToolTipText("<port_number> "+i); // Maybe we can use this value for getting what port number the conversation is
-            button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align in BoxLayout
-            // Add an ActionListener to the button
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Action to perform on button click
-                    JOptionPane.showMessageDialog(null, button.getToolTipText(), "Alert", JOptionPane.INFORMATION_MESSAGE);
-                    // user should be able open a chatWindow with for the converstion with the associated portnumber of the button
-                }
-            });
-
-            onlineUsersPanel.add(button);
-            onlineUsersPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add spacing between buttons
-        }
+//        for (int i = 1; i <= 7; i++) {
+//            JButton button = new JButton("User " + i);
+//            button.setPreferredSize(new Dimension(160, 30)); // Fixed width of 95, height of 30
+//            button.setMaximumSize(new Dimension(160, 30)); // Enforce max size
+//            button.setToolTipText("<port_number> "+i); // Maybe we can use this value for getting what port number the conversation is
+//            button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align in BoxLayout
+//            // Add an ActionListener to the button
+//            button.addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//                    // Action to perform on button click
+//                    JOptionPane.showMessageDialog(null, button.getToolTipText(), "Alert", JOptionPane.INFORMATION_MESSAGE);
+//                    // user should be able open a chatWindow with for the converstion with the associated portnumber of the button
+//                }
+//            });
+//
+//            onlineUsersPanel.add(button);
+//            onlineUsersPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add spacing between buttons
+//        }
     }
     
     private void intializeAllUserList(){
-        // Temporary Placeholder for allUsersPanel
-        for (int i = 1; i <= 10; i++) {
-            JButton button = new JButton("User " + i);
-            button.setPreferredSize(new Dimension(160, 30)); // Fixed width of 95, height of 30
-            button.setMaximumSize(new Dimension(160, 30)); // Enforce max size
-            button.setToolTipText("<port_number> "+i); // Maybe we can use this value for getting what port number the conversation is
-            button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align in BoxLayout
-            // Add an ActionListener to the button
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Action to perform on button click
-                    JOptionPane.showMessageDialog(null, button.getToolTipText(), "Alert", JOptionPane.INFORMATION_MESSAGE);
-                    // user should be able open a chatWindow with for the converstion with the associated portnumber of the button
-                }
-            });
-            allUsersPanel.add(button);
-            allUsersPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add spacing between buttons
-        }
+//        // Temporary Placeholder for allUsersPanel
+//        for (int i = 1; i <= 10; i++) {
+//            JButton button = new JButton("User " + i);
+//            button.setPreferredSize(new Dimension(160, 30)); // Fixed width of 95, height of 30
+//            button.setMaximumSize(new Dimension(160, 30)); // Enforce max size
+//            button.setToolTipText("<port_number> "+i); // Maybe we can use this value for getting what port number the conversation is
+//            button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align in BoxLayout
+//            // Add an ActionListener to the button
+//            button.addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//                    // Action to perform on button click
+//                    JOptionPane.showMessageDialog(null, button.getToolTipText(), "Alert", JOptionPane.INFORMATION_MESSAGE);
+//                    // user should be able open a chatWindow with for the converstion with the associated portnumber of the button
+//                }
+//            });
+//            allUsersPanel.add(button);
+//            allUsersPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add spacing between buttons
+//        }
     }
     
-    private void addChannelToChannelPanel(String channelName,int portNumber){
+    private void addChannelToChannelPanel(String channelName,int chatId){
         JButton button = new JButton(channelName);
         button.setPreferredSize(new Dimension(160, 30)); 
         button.setMaximumSize(new Dimension(160, 30));
-        button.setToolTipText("<port_number> "+portNumber); // Maybe we can use this value for getting what port number the conversation is
+        button.setToolTipText(""+chatId);
         button.setAlignmentX(Component.CENTER_ALIGNMENT); 
         // Add an ActionListener to the button
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Action to perform on button click
-                JOptionPane.showMessageDialog(null, button.getToolTipText(), "Alert", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "chat_id: "+button.getToolTipText(), "Alert", JOptionPane.INFORMATION_MESSAGE);
                 // user should be able open a chatWindow with for the converstion with the associated portnumber of the button
             }
         });
@@ -165,6 +199,40 @@ public class MainFrame extends javax.swing.JFrame {
             verticalBar.setValue(verticalBar.getMaximum());
         });
     }
+    
+    public void addChannel(String channelName, boolean isPrivate) {
+        try (Socket socket = new Socket("localhost", 12345);
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+            // Create a User object and a Message object for the login request
+            Gson gson = new Gson();
+            Channel channel = new Channel(channelName, isPrivate, userID); 
+            String channelJson = gson.toJson(channel);
+            Request request = new Request("addChannel", channelJson); 
+            String jsonMessage = gson.toJson(request);
+
+            // Send request
+            out.println(jsonMessage);
+
+            // Read server response
+            String response = in.readLine();
+
+            if (response == null) {
+                JOptionPane.showMessageDialog(this, "No response from server.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (response.equalsIgnoreCase("Unable to set up channel")) {
+                // when failed
+                JOptionPane.showMessageDialog(this, response, "Error while adding channel", JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Channel '" + channelName + "' has been created as " + (isPrivate ? "Private" : "Public"));
+                addChannelToChannelPanel(channelName,Integer.parseInt(response));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error connecting to server: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE); 
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -201,7 +269,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         popupMenu.setComponentPopupMenu(popupMenu);
 
-        usernameItem.setText("jMenuItem1");
         usernameItem.setEnabled(false);
         popupMenu.add(usernameItem);
         popupMenu.add(jSeparator1);
@@ -378,12 +445,10 @@ public class MainFrame extends javax.swing.JFrame {
         if (result == JOptionPane.OK_OPTION) {
             String channelName = channelNameField.getText().trim();
             boolean isPrivate = privateChannelCheckBox.isSelected();
-
+            
             if (!channelName.isEmpty()) {
                 // Here you can handle the creation of the channel
-                int port_number = 0;
-                addChannelToChannelPanel(channelName,port_number);
-                JOptionPane.showMessageDialog(null, "Channel '" + channelName + "' has been created as " + (isPrivate ? "Private" : "Public"));
+                addChannel(channelName,isPrivate);
             } else {
                 JOptionPane.showMessageDialog(null, "Channel name cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -429,7 +494,7 @@ public class MainFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainFrame("user").setVisible(true); // for testing, temporary parameter username
+                new MainFrame(-1).setVisible(true); 
             }
         });
     }

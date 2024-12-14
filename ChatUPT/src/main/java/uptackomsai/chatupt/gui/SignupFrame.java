@@ -12,7 +12,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import javax.swing.JOptionPane;
-import uptackomsai.chatupt.model.Message;
+import uptackomsai.chatupt.model.Request;
 import uptackomsai.chatupt.model.User;
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Image;
@@ -211,7 +211,7 @@ public class SignupFrame extends javax.swing.JFrame {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             // Create a registration request message
-            Message message = new Message("register", userJson); // Use Message structure
+            Request message = new Request("register", userJson); // Use Message structure
             String jsonMessage = gson.toJson(message);
 
             // Send registration request to server

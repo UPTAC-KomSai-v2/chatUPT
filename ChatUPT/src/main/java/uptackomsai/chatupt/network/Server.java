@@ -4,13 +4,14 @@ import java.io.*;
 import java.net.*;
 import java.util.concurrent.*;
 import com.google.gson.Gson;
-import uptackomsai.chatupt.model.Message;
+import uptackomsai.chatupt.model.Request;
 import uptackomsai.chatupt.providers.RegisterProvider;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import uptackomsai.chatupt.providers.DbBaseProvider;
 import uptackomsai.chatupt.providers.LoginProvider;
+import uptackomsai.chatupt.providers.NewChannelProvider;
 
 public class Server {
     private static final int PORT = 12345;
@@ -51,35 +52,47 @@ public class Server {
         public void run() {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
                 Gson gson = new Gson();
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                out = new PrintWriter(socket.getOutputStream(), true);
 
-                String jsonMessage;
                 while ((jsonMessage = in.readLine()) != null) {
                     // Parse the received message
-                    Message message = gson.fromJson(jsonMessage, Message.class);
-
-                    // Handle registration request
-                    if (message.getType().equals("register")) {
-                        for (ServerModule module : modules) {
-                            if (module instanceof RegisterProvider) {
-                                module.handleRequest(message.getType(), message.getContent(), out);
-                                break;
+                    Request request = gson.fromJson(jsonMessage, Request.class);
+                    
+                    // Process the message based on its type
+                    switch (request.getType()) {
+                        case "register": // Handle registration request
+                            System.out.println("Processing register: " + request.getContent());
+                            for (ServerModule module : modules) {
+                                if (module instanceof RegisterProvider) {
+                                    module.handleRequest(request.getType(), request.getContent(), out);
+                                    break;
+                                }
                             }
-                        }
-                    } 
-                    else if (message.getType().equals("login")) {
-                        // Handle login
-                        for (ServerModule module : modules) {
-                            if (module instanceof LoginProvider) {
-                                module.handleRequest(message.getType(), message.getContent(), out);
-                                break;
+                            break;
+                        case "login": // Handle login
+                            System.out.println("Processing login: " + request.getContent());
+                            for (ServerModule module : modules) {
+                                if (module instanceof LoginProvider) {
+                                    module.handleRequest(request.getType(), request.getContent(), out);
+                                    break;
+                                }
                             }
-                        }
-                    }
-                    else {
-                        out.println("Unknown request type.");
+                            break;
+                        case "addChannel": // Handle add channel
+                            System.out.println("Processing Channel Add: " + request.getContent());
+                            for (ServerModule module : modules) {
+                                if (module instanceof NewChannelProvider) {
+                                    module.handleRequest(request.getType(), request.getContent(), out);
+                                    break;
+                                }
+                            }
+                            break;
+                        default:
+                            System.err.println("Unknown request type: " + request.getType());
                     }
                 }
+            } catch (com.google.gson.JsonSyntaxException e) {
+                System.err.println("Invalid JSON received: " + jsonMessage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -115,6 +128,7 @@ public class Server {
         // Register different modules
         server.registerModule(new RegisterProvider());
         server.registerModule(new LoginProvider());
+        server.registerModule(new NewChannelProvider());
         
         DbBaseProvider db = new DbBaseProvider();
         db.setupDatabase();

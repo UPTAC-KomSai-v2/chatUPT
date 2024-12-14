@@ -3,7 +3,7 @@ package uptackomsai.chatupt.network;
 import com.google.gson.Gson;
 import java.io.*;
 import java.net.*;
-import uptackomsai.chatupt.model.Message;
+import uptackomsai.chatupt.model.Request;
 
 public class Client {
     private final String serverHost;
@@ -23,7 +23,7 @@ public class Client {
         out = new PrintWriter(socket.getOutputStream(), true);
 
         // Create a Message object (assuming you have a Message class with "type" and "content" fields)
-        Message message = new Message("username", username);
+        Request message = new Request("username", username);
 
         // Convert the Message object to JSON
         Gson gson = new Gson();

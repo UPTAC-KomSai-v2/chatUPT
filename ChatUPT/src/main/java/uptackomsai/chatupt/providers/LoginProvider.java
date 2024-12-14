@@ -9,20 +9,21 @@ import java.io.PrintWriter;
 import java.sql.*;
 
 public class LoginProvider implements ServerModule {
-
+    private int userId;
     // Authenticate the user based on username and password
     private boolean authenticateUser(User user) {
         // Setup database connection
         DbBaseProvider dbProvider = new DbBaseProvider();
         Connection dbConnection = dbProvider.getConnection();
 
-        String selectUserSQL = "SELECT password FROM user WHERE username = ?";
+        String selectUserSQL = "SELECT user_id, password FROM user WHERE username = ?";
         try (PreparedStatement stmt = dbConnection.prepareStatement(selectUserSQL)) {
             stmt.setString(1, user.getUsername());
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                String storedPassword = rs.getString("password");
+                userId = rs.getInt("user_id"); // Retrieve user_id
+                String storedPassword = rs.getString("password"); // Retrieve password
 
                 // Compare the stored hashed password with the entered password
                 if (BCrypt.checkpw(user.getPassword(), storedPassword)) {
@@ -42,7 +43,7 @@ public class LoginProvider implements ServerModule {
             User user = gson.fromJson(content, User.class); // Deserialize the JSON content to a User object
 
             if (authenticateUser(user)) {
-                out.println("Login successful"); // Send success response
+                out.println(userId); // Send success response
             } else {
                 out.println("Invalid username or password"); // Send failure response
             }
