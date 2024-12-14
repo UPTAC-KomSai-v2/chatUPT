@@ -24,7 +24,7 @@ public class LoginFrame extends javax.swing.JFrame {
         
         initComponents();
         setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
-        setTitle("ChatUPT");
+        setTitle("Login Form");
         setLocationRelativeTo(null);
         
         logoLabel.setIcon(new ImageIcon(
@@ -53,8 +53,8 @@ public class LoginFrame extends javax.swing.JFrame {
         passwordLabel = new javax.swing.JLabel();
         jPasswordField1 = new javax.swing.JPasswordField();
         loginButton = new javax.swing.JButton();
-        left = new javax.swing.JPanel();
-        right = new javax.swing.JPanel();
+        leftPadding = new javax.swing.JPanel();
+        rightPadding = new javax.swing.JPanel();
         footPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         signupButton = new javax.swing.JButton();
@@ -71,9 +71,10 @@ public class LoginFrame extends javax.swing.JFrame {
 
         getContentPane().add(headPanel, java.awt.BorderLayout.PAGE_START);
 
-        inputPanel.setPreferredSize(new java.awt.Dimension(400, 150));
+        inputPanel.setPreferredSize(new java.awt.Dimension(400, 175));
         inputPanel.setLayout(new java.awt.BorderLayout());
 
+        center.setPreferredSize(new java.awt.Dimension(250, 175));
         center.setLayout(new java.awt.GridLayout(5, 0, 0, 5));
 
         usernameLabel.setText("Username ");
@@ -105,12 +106,12 @@ public class LoginFrame extends javax.swing.JFrame {
 
         inputPanel.add(center, java.awt.BorderLayout.CENTER);
 
-        left.setPreferredSize(new java.awt.Dimension(80, 100));
-        left.setRequestFocusEnabled(false);
-        inputPanel.add(left, java.awt.BorderLayout.WEST);
+        leftPadding.setPreferredSize(new java.awt.Dimension(80, 100));
+        leftPadding.setRequestFocusEnabled(false);
+        inputPanel.add(leftPadding, java.awt.BorderLayout.WEST);
 
-        right.setPreferredSize(new java.awt.Dimension(80, 10));
-        inputPanel.add(right, java.awt.BorderLayout.EAST);
+        rightPadding.setPreferredSize(new java.awt.Dimension(80, 10));
+        inputPanel.add(rightPadding, java.awt.BorderLayout.EAST);
 
         getContentPane().add(inputPanel, java.awt.BorderLayout.CENTER);
 
@@ -197,11 +198,11 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JPanel inputPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JPanel left;
+    private javax.swing.JPanel leftPadding;
     private javax.swing.JButton loginButton;
     private javax.swing.JLabel logoLabel;
     private javax.swing.JLabel passwordLabel;
-    private javax.swing.JPanel right;
+    private javax.swing.JPanel rightPadding;
     private javax.swing.JButton signupButton;
     private javax.swing.JLabel usernameLabel;
     private javax.swing.JTextField usernameTextField;
