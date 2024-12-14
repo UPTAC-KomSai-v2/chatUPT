@@ -1,25 +1,27 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package uptackomsai.chatupt.network;
 
-/**
- *
- * @author Lei
- */
 import java.io.*;
 import java.net.*;
 import java.util.concurrent.*;
+import com.google.gson.Gson;
+import uptackomsai.chatupt.model.Message;
+import uptackomsai.chatupt.providers.RegisterProvider;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
+import uptackomsai.chatupt.providers.DbBaseProvider;
+import uptackomsai.chatupt.providers.LoginProvider;
 
 public class Server {
     private static final int PORT = 12345;
     private final ExecutorService pool;
     private final ConcurrentHashMap<String, PrintWriter> clients;
+    private final List<ServerModule> modules;
 
     public Server() {
         pool = Executors.newCachedThreadPool();
         clients = new ConcurrentHashMap<>();
+        modules = new ArrayList<>();
     }
 
     public void start() {
@@ -37,6 +39,9 @@ public class Server {
 
     private class ClientHandler implements Runnable {
         private final Socket socket;
+        private String jsonMessage;
+        private String username;
+        private PrintWriter out;
 
         public ClientHandler(Socket socket) {
             this.socket = socket;
@@ -44,22 +49,39 @@ public class Server {
 
         @Override
         public void run() {
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+                Gson gson = new Gson();
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
-                String username = in.readLine();
-                clients.put(username, out);
-                System.out.println(username + " connected.");
+                String jsonMessage;
+                while ((jsonMessage = in.readLine()) != null) {
+                    // Parse the received message
+                    Message message = gson.fromJson(jsonMessage, Message.class);
 
-                String message;
-                while ((message = in.readLine()) != null) {
-                    broadcast(username, message);
+                    // Handle registration request
+                    if (message.getType().equals("register")) {
+                        for (ServerModule module : modules) {
+                            if (module instanceof RegisterProvider) {
+                                module.handleRequest(message.getType(), message.getContent(), out);
+                                break;
+                            }
+                        }
+                    } 
+                    else if (message.getType().equals("login")) {
+                        // Handle login
+                        for (ServerModule module : modules) {
+                            if (module instanceof LoginProvider) {
+                                module.handleRequest(message.getType(), message.getContent(), out);
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        out.println("Unknown request type.");
+                    }
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                disconnect();
             }
         }
 
@@ -71,7 +93,10 @@ public class Server {
 
         private void disconnect() {
             try {
-                clients.remove(socket.getInetAddress().getHostName());
+                if (username != null) {
+                    clients.remove(username);
+                    broadcast("Server", username + " has left the chat.");
+                }
                 socket.close();
                 System.out.println("A client disconnected.");
             } catch (IOException e) {
@@ -80,7 +105,19 @@ public class Server {
         }
     }
 
+    // Register a module that can handle specific types of requests
+    public void registerModule(ServerModule module) {
+        modules.add(module);
+    }
+
     public static void main(String[] args) {
-        new Server().start();
+        Server server = new Server();
+        // Register different modules
+        server.registerModule(new RegisterProvider());
+        server.registerModule(new LoginProvider());
+        
+        DbBaseProvider db = new DbBaseProvider();
+        db.setupDatabase();
+        server.start();
     }
 }

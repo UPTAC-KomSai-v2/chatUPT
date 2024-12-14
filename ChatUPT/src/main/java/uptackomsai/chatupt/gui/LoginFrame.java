@@ -4,6 +4,16 @@
  */
 package uptackomsai.chatupt.gui;
 
+import com.google.gson.Gson;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import javax.swing.JOptionPane;
+import uptackomsai.chatupt.model.Message;
+import uptackomsai.chatupt.model.User;
+
 /**
  *
  * @author Lei
@@ -144,9 +154,44 @@ public class LoginFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_signupButtonActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
-        MainFrame mainFrame = new MainFrame(usernameTextField.getText()); // for testing passing the username instead of userID
-        mainFrame.setVisible(true);
-        this.dispose();
+        String username = usernameTextField.getText();
+        String password = new String(jPasswordField1.getPassword()).trim();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Username and password cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try (Socket socket = new Socket("localhost", 12345);
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+            // Create a User object and a Message object for the login request
+            Gson gson = new Gson();
+            User user = new User(username, password, null); // Email is not required for login
+            String userJson = gson.toJson(user);
+            Message message = new Message("login", userJson); // Use the Message class for consistency
+            String jsonMessage = gson.toJson(message);
+
+            // Send login request
+            out.println(jsonMessage);
+
+            // Read server response
+            String response = in.readLine();
+
+            if (response == null) {
+                JOptionPane.showMessageDialog(this, "No response from server.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (response.equalsIgnoreCase("Login successful")) {
+                MainFrame mainFrame = new MainFrame(username);
+                mainFrame.setVisible(true);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, response, "Login Failed", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error connecting to server: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_loginButtonActionPerformed
 
     /**
