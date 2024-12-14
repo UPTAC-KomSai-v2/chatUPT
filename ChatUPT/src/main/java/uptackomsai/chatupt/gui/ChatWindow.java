@@ -8,13 +8,14 @@ package uptackomsai.chatupt.gui;
  *
  * @author Lei
  */
-import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
+import java.io.File;
 import uptackomsai.chatupt.network.Client;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.net.URISyntaxException;
 public class ChatWindow extends javax.swing.JPanel {
     private Client client;
     /**
@@ -70,8 +71,9 @@ public class ChatWindow extends javax.swing.JPanel {
         chatScrollPane = new javax.swing.JScrollPane();
         messagesPanel = new javax.swing.JPanel();
         inputPanel = new javax.swing.JPanel();
+        attachPreviewJEditorPane = new javax.swing.JEditorPane();
         attachButton = new javax.swing.JButton();
-        emojiButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
         inputField = new javax.swing.JTextField();
         sendButton = new javax.swing.JButton();
 
@@ -118,16 +120,29 @@ public class ChatWindow extends javax.swing.JPanel {
 
         inputPanel.setPreferredSize(new java.awt.Dimension(400, 50));
 
+        attachPreviewJEditorPane.setEditable(false);
+        attachPreviewJEditorPane.setContentType("text/html"); // NOI18N
+        attachPreviewJEditorPane.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        attachPreviewJEditorPane.setText("<html>\r   <head>\r \r   </head>\r   <body>\r     <p style=\"margin-top: 0\">\r      preview \r     </p>\r   </body>\r </html>\r ");
+        attachPreviewJEditorPane.setPreferredSize(new java.awt.Dimension(68, 23));
+        attachPreviewJEditorPane.addHyperlinkListener(new javax.swing.event.HyperlinkListener() {
+            public void hyperlinkUpdate(javax.swing.event.HyperlinkEvent evt) {
+                attachPreviewJEditorPaneHyperlinkUpdate(evt);
+            }
+        });
+        inputPanel.add(attachPreviewJEditorPane);
+
         attachButton.setText("Attach File");
         attachButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         attachButton.setMargin(new java.awt.Insets(2, 5, 3, 5));
         attachButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        attachButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                attachButtonActionPerformed(evt);
+            }
+        });
         inputPanel.add(attachButton);
-
-        emojiButton.setText("Emoji");
-        emojiButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        emojiButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        inputPanel.add(emojiButton);
+        inputPanel.add(jScrollPane1);
 
         inputField.setToolTipText("Enter Message");
         inputField.setFocusTraversalPolicyProvider(true);
@@ -192,17 +207,54 @@ public class ChatWindow extends javax.swing.JPanel {
         adminFrame.setVisible(true);
     }//GEN-LAST:event_adminSettingsActionPerformed
 
+    private void attachButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attachButtonActionPerformed
+        // Choose a file to upload
+        JFileChooser fileChooser = new JFileChooser();
+        int returnVal = fileChooser.showOpenDialog(inputPanel);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            
+            String fileName = selectedFile.getName();
+            String filePath = selectedFile.getAbsolutePath();
+            String url = selectedFile.toURI().toString();
+            
+            attachPreviewJEditorPane.setText("<html><body><a href=\"" + url + "\">" + fileName + "</a></html>");
+            
+            // send selectedFile to server backend
+            
+        }
+    }//GEN-LAST:event_attachButtonActionPerformed
+
+    private void attachPreviewJEditorPaneHyperlinkUpdate(javax.swing.event.HyperlinkEvent evt) {//GEN-FIRST:event_attachPreviewJEditorPaneHyperlinkUpdate
+        // if the attachPreview hyperlink is clicked, perform this
+        if (evt.getEventType() == javax.swing.event.HyperlinkEvent.EventType.ACTIVATED) {
+            // Open the file
+            try {
+                if (Desktop.isDesktopSupported()) {
+                    // Convert the URL back to a URI and then to a File
+                    Desktop.getDesktop().open(new File(evt.getURL().toURI()));
+                }
+            } catch (IOException | URISyntaxException ex) {
+                JOptionPane.showMessageDialog(inputPanel,
+                    "Failed to open the file: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_attachPreviewJEditorPaneHyperlinkUpdate
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel activeStatus;
     private javax.swing.JPanel adminPanel;
     private javax.swing.JButton adminSettings;
     private javax.swing.JButton attachButton;
+    private javax.swing.JEditorPane attachPreviewJEditorPane;
     private javax.swing.JScrollPane chatScrollPane;
     private javax.swing.JPanel chatheaderPanel;
-    private javax.swing.JButton emojiButton;
     private javax.swing.JPanel headPanel;
     private javax.swing.JTextField inputField;
     private javax.swing.JPanel inputPanel;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel messagesPanel;
     private javax.swing.JButton sendButton;
     private javax.swing.JLabel typingIndicator;
