@@ -4,6 +4,13 @@
  */
 package uptackomsai.chatupt.gui;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import java.awt.Image;
+import javax.swing.ImageIcon;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import uptackomsai.chatupt.utils.ImageLoader;
+
 /**
  *
  * @author Lei
@@ -13,13 +20,20 @@ public class ProfileManageFrame extends javax.swing.JFrame {
     /**
      * Creates new form ProfileFrame
      */
-    public ProfileManageFrame() {
-        setUndecorated(true); 
+    public ProfileManageFrame() { // should pass the userID from the Mainframe
         setResizable(false);
         
         initComponents();
-        setTitle("ChatUPT");
+        setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+        setTitle("Profile Settings");
         setLocationRelativeTo(null);
+        
+        profilepicLabel.setIcon(new ImageIcon(
+            ImageLoader.loadImageIcon("default.png").getImage().getScaledInstance(
+            profilepicLabel.getPreferredSize().width,
+            profilepicLabel.getPreferredSize().height,
+            Image.SCALE_SMOOTH)
+        ));
     }
 
     /**
@@ -32,53 +46,43 @@ public class ProfileManageFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         borderPanel = new javax.swing.JPanel();
-        headPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         profilepicPanel = new javax.swing.JPanel();
         profilepicPreview = new javax.swing.JPanel();
         profilepicLabel = new javax.swing.JLabel();
         profilepicButton = new javax.swing.JButton();
         inputPanel = new javax.swing.JPanel();
-        usernamePanel = new javax.swing.JPanel();
+        center = new javax.swing.JPanel();
         usernameLabel = new javax.swing.JLabel();
         usernameTextField = new javax.swing.JTextField();
-        currentpassPanel = new javax.swing.JPanel();
         currentpassLabel = new javax.swing.JLabel();
         currentpassField = new javax.swing.JPasswordField();
-        newpassPanel = new javax.swing.JPanel();
         newpassLabel = new javax.swing.JLabel();
         newpassField = new javax.swing.JPasswordField();
-        newpass2Panel = new javax.swing.JPanel();
         newpass2Label = new javax.swing.JLabel();
         newpass2Field = new javax.swing.JPasswordField();
-        emailPanel = new javax.swing.JPanel();
         emailLabel = new javax.swing.JLabel();
         emailTextField = new javax.swing.JTextField();
         settingsPanel = new javax.swing.JPanel();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
+        jLabel1 = new javax.swing.JLabel();
+        emailNotifCheckbox = new javax.swing.JCheckBox();
+        desktopNotifCheckbox = new javax.swing.JCheckBox();
         actionsPanel = new javax.swing.JPanel();
         saveButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
+        leftPadding = new javax.swing.JPanel();
+        rightPadding = new javax.swing.JPanel();
+        footerPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         borderPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         borderPanel.setLayout(new java.awt.BorderLayout());
 
-        headPanel.setPreferredSize(new java.awt.Dimension(400, 50));
-
-        jLabel1.setText("Profile Management");
-        headPanel.add(jLabel1);
-
-        borderPanel.add(headPanel, java.awt.BorderLayout.PAGE_START);
-
         profilepicPreview.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         profilepicPreview.setToolTipText("");
         profilepicPreview.setLayout(new java.awt.BorderLayout());
 
         profilepicLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        profilepicLabel.setText("<profile pic>");
         profilepicLabel.setPreferredSize(new java.awt.Dimension(100, 100));
         profilepicPreview.add(profilepicLabel, java.awt.BorderLayout.CENTER);
 
@@ -90,79 +94,63 @@ public class ProfileManageFrame extends javax.swing.JFrame {
 
         profilepicPanel.add(profilepicPreview);
 
-        borderPanel.add(profilepicPanel, java.awt.BorderLayout.CENTER);
+        borderPanel.add(profilepicPanel, java.awt.BorderLayout.NORTH);
 
-        inputPanel.setPreferredSize(new java.awt.Dimension(400, 280));
-        inputPanel.setLayout(new java.awt.GridLayout(7, 1));
+        inputPanel.setPreferredSize(new java.awt.Dimension(400, 420));
+        inputPanel.setLayout(new java.awt.BorderLayout());
 
-        usernamePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.TRAILING));
+        center.setPreferredSize(new java.awt.Dimension(400, 420));
+        center.setLayout(new java.awt.GridLayout(12, 0, 0, 5));
 
         usernameLabel.setText("Username");
-        usernamePanel.add(usernameLabel);
+        center.add(usernameLabel);
 
         usernameTextField.setText("Current Username");
         usernameTextField.setPreferredSize(new java.awt.Dimension(250, 30));
-        usernamePanel.add(usernameTextField);
-
-        inputPanel.add(usernamePanel);
-
-        currentpassPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.TRAILING));
+        center.add(usernameTextField);
 
         currentpassLabel.setText("Current Password");
-        currentpassPanel.add(currentpassLabel);
+        center.add(currentpassLabel);
 
-        currentpassField.setText("Current Password");
-        currentpassField.setToolTipText("Enter Your Password");
+        currentpassField.setToolTipText("Enter Current Password");
         currentpassField.setPreferredSize(new java.awt.Dimension(250, 30));
-        currentpassPanel.add(currentpassField);
-
-        inputPanel.add(currentpassPanel);
-
-        newpassPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.TRAILING));
+        center.add(currentpassField);
 
         newpassLabel.setText("New Password");
-        newpassPanel.add(newpassLabel);
+        center.add(newpassLabel);
 
-        newpassField.setText("Current Password");
         newpassField.setToolTipText("Enter New Password");
         newpassField.setPreferredSize(new java.awt.Dimension(250, 30));
-        newpassPanel.add(newpassField);
-
-        inputPanel.add(newpassPanel);
-
-        newpass2Panel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.TRAILING));
+        center.add(newpassField);
 
         newpass2Label.setText("Confirm New Password");
-        newpass2Panel.add(newpass2Label);
+        center.add(newpass2Label);
 
-        newpass2Field.setText("Current Password");
         newpass2Field.setToolTipText("Confirm New Password");
         newpass2Field.setPreferredSize(new java.awt.Dimension(250, 30));
-        newpass2Panel.add(newpass2Field);
-
-        inputPanel.add(newpass2Panel);
-
-        emailPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.TRAILING));
+        center.add(newpass2Field);
 
         emailLabel.setText("Email Address");
-        emailPanel.add(emailLabel);
+        center.add(emailLabel);
 
-        emailTextField.setText("user@gmail.com");
+        emailTextField.setText("currentemail@gmail.com");
         emailTextField.setPreferredSize(new java.awt.Dimension(250, 30));
-        emailPanel.add(emailTextField);
+        center.add(emailTextField);
 
-        inputPanel.add(emailPanel);
+        jLabel1.setText("Notifications");
+        settingsPanel.add(jLabel1);
 
-        jCheckBox1.setSelected(true);
-        jCheckBox1.setText("Email Notifications");
-        settingsPanel.add(jCheckBox1);
+        emailNotifCheckbox.setSelected(true);
+        emailNotifCheckbox.setText("Email");
+        settingsPanel.add(emailNotifCheckbox);
 
-        jCheckBox2.setText("Desktop Notifications");
-        settingsPanel.add(jCheckBox2);
+        desktopNotifCheckbox.setText("Desktop");
+        settingsPanel.add(desktopNotifCheckbox);
 
-        inputPanel.add(settingsPanel);
+        center.add(settingsPanel);
 
         actionsPanel.setPreferredSize(new java.awt.Dimension(400, 50));
+        actionsPanel.setLayout(new java.awt.BorderLayout());
 
         saveButton.setText("Save Changes");
         saveButton.setToolTipText("");
@@ -171,7 +159,7 @@ public class ProfileManageFrame extends javax.swing.JFrame {
                 saveButtonActionPerformed(evt);
             }
         });
-        actionsPanel.add(saveButton);
+        actionsPanel.add(saveButton, java.awt.BorderLayout.EAST);
 
         cancelButton.setText("Cancel");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -179,11 +167,22 @@ public class ProfileManageFrame extends javax.swing.JFrame {
                 cancelButtonActionPerformed(evt);
             }
         });
-        actionsPanel.add(cancelButton);
+        actionsPanel.add(cancelButton, java.awt.BorderLayout.WEST);
 
-        inputPanel.add(actionsPanel);
+        center.add(actionsPanel);
 
-        borderPanel.add(inputPanel, java.awt.BorderLayout.PAGE_END);
+        inputPanel.add(center, java.awt.BorderLayout.CENTER);
+
+        leftPadding.setPreferredSize(new java.awt.Dimension(80, 10));
+        inputPanel.add(leftPadding, java.awt.BorderLayout.WEST);
+
+        rightPadding.setPreferredSize(new java.awt.Dimension(80, 10));
+        inputPanel.add(rightPadding, java.awt.BorderLayout.EAST);
+
+        borderPanel.add(inputPanel, java.awt.BorderLayout.CENTER);
+
+        footerPanel.setPreferredSize(new java.awt.Dimension(10, 30));
+        borderPanel.add(footerPanel, java.awt.BorderLayout.SOUTH);
 
         getContentPane().add(borderPanel, java.awt.BorderLayout.CENTER);
 
@@ -228,7 +227,12 @@ public class ProfileManageFrame extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
-
+        try {
+            // Set the FlatLaf Look and Feel
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -241,31 +245,29 @@ public class ProfileManageFrame extends javax.swing.JFrame {
     private javax.swing.JPanel actionsPanel;
     private javax.swing.JPanel borderPanel;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JPanel center;
     private javax.swing.JPasswordField currentpassField;
     private javax.swing.JLabel currentpassLabel;
-    private javax.swing.JPanel currentpassPanel;
+    private javax.swing.JCheckBox desktopNotifCheckbox;
     private javax.swing.JLabel emailLabel;
-    private javax.swing.JPanel emailPanel;
+    private javax.swing.JCheckBox emailNotifCheckbox;
     private javax.swing.JTextField emailTextField;
-    private javax.swing.JPanel headPanel;
+    private javax.swing.JPanel footerPanel;
     private javax.swing.JPanel inputPanel;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel leftPadding;
     private javax.swing.JPasswordField newpass2Field;
     private javax.swing.JLabel newpass2Label;
-    private javax.swing.JPanel newpass2Panel;
     private javax.swing.JPasswordField newpassField;
     private javax.swing.JLabel newpassLabel;
-    private javax.swing.JPanel newpassPanel;
     private javax.swing.JButton profilepicButton;
     private javax.swing.JLabel profilepicLabel;
     private javax.swing.JPanel profilepicPanel;
     private javax.swing.JPanel profilepicPreview;
+    private javax.swing.JPanel rightPadding;
     private javax.swing.JButton saveButton;
     private javax.swing.JPanel settingsPanel;
     private javax.swing.JLabel usernameLabel;
-    private javax.swing.JPanel usernamePanel;
     private javax.swing.JTextField usernameTextField;
     // End of variables declaration//GEN-END:variables
 }

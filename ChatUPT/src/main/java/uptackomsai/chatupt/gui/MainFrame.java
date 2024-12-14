@@ -7,60 +7,90 @@ package uptackomsai.chatupt.gui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Scanner;//for testing
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import uptackomsai.chatupt.network.Client;
-
+import uptackomsai.chatupt.utils.ImageLoader;
+import com.formdev.flatlaf.FlatDarkLaf;
+import java.awt.GridLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.BevelBorder;
 /**
  *
  * @author Lei
  */
 public class MainFrame extends javax.swing.JFrame {
-    private Client user;
+    private int userID;
     /**
      * Creates new form ChatFrame
      */
-    public MainFrame(String username) { // for testing, I think UserID would be better instead of username
+    public MainFrame(String username) { // UserID is received here instead of username
+        setResizable(false);
         initComponents();
         setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
-        setTitle("ChatUPT");
+        setTitle("Welcome");
         setSize(800, 600);
         setLocationRelativeTo(null);
         
+        // from the UserID parameter, get the user's username, last visited ChatWindow, and profile_path
+        // stored in the server's database. Then the initializeProfilePanel() should set the usernameItem's text,
+        // proficonToggleButton's icon, and add/open the lastvisisted ChatWindow (unless 0, meaning new user).
+        
         usernameItem.setText(username);
         
+        initializeAppPanel();
+        initializeProfilePanel();
         intializeChannelList();
         intializeOnlineUserList();
         intializeAllUserList();
         
-        // Initialize the ChatWindow
+        // Initialize the ChatWindow for testing
         ChatWindow chatWindow = new ChatWindow("localhost", 12345, username); 
         add(chatWindow, BorderLayout.CENTER);
     }
     
+    private void initializeAppPanel(){
+        appiconLabel.setIcon(new ImageIcon(
+            ImageLoader.loadImageIcon("logo.png").getImage().getScaledInstance(
+            appiconLabel.getPreferredSize().width,
+            appiconLabel.getPreferredSize().height,
+            Image.SCALE_SMOOTH)
+        ));
+        
+        appnameLabel.setIcon(new ImageIcon(
+            ImageLoader.loadImageIcon("appname.png").getImage().getScaledInstance(
+            appnameLabel.getPreferredSize().width,
+            appnameLabel.getPreferredSize().height,
+            Image.SCALE_SMOOTH)
+        ));
+    }
+    
+    private void initializeProfilePanel(){
+        proficonToggleButton.setIcon(new ImageIcon(
+            ImageLoader.loadImageIcon("default.png").getImage().getScaledInstance(
+            proficonToggleButton.getPreferredSize().width,
+            proficonToggleButton.getPreferredSize().height,
+            Image.SCALE_SMOOTH)
+        ));
+    }
+    
     private void intializeChannelList(){
         // Temporary Placeholder for channelsPanel
-        for (int i = 1; i <= 10; i++) {
-            JButton button = new JButton("Channel " + i);
-            button.setPreferredSize(new Dimension(160, 30)); // Fixed width of 95, height of 30
-            button.setMaximumSize(new Dimension(160, 30)); // Enforce max size
-            button.setToolTipText("<port_number> "+i); // Maybe we can use this value for getting what port number the conversation is
-            button.setAlignmentX(Component.CENTER_ALIGNMENT); // Center align in BoxLayout
-            // Add an ActionListener to the button
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Action to perform on button click
-                    JOptionPane.showMessageDialog(null, button.getToolTipText(), "Alert", JOptionPane.INFORMATION_MESSAGE);
-                    // user should be able open a chatWindow with for the converstion with the associated portnumber of the button
-                }
-            });
-            channelsPanel.add(button);
-            channelsPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add spacing between buttons
+        for (int i = 1; i <= 2; i++) {
+            addChannelToChannelPanel("Channel "+i,i);
         }
     }
     
@@ -108,6 +138,33 @@ public class MainFrame extends javax.swing.JFrame {
             allUsersPanel.add(Box.createRigidArea(new Dimension(0, 5))); // Add spacing between buttons
         }
     }
+    
+    private void addChannelToChannelPanel(String channelName,int portNumber){
+        JButton button = new JButton(channelName);
+        button.setPreferredSize(new Dimension(160, 30)); 
+        button.setMaximumSize(new Dimension(160, 30));
+        button.setToolTipText("<port_number> "+portNumber); // Maybe we can use this value for getting what port number the conversation is
+        button.setAlignmentX(Component.CENTER_ALIGNMENT); 
+        // Add an ActionListener to the button
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Action to perform on button click
+                JOptionPane.showMessageDialog(null, button.getToolTipText(), "Alert", JOptionPane.INFORMATION_MESSAGE);
+                // user should be able open a chatWindow with for the converstion with the associated portnumber of the button
+            }
+        });
+        channelsPanel.add(button);
+        channelsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        channelsPanel.revalidate(); // Recalculate layout
+        channelsPanel.repaint(); 
+        
+        // scroll down
+        SwingUtilities.invokeLater(() -> {
+            JScrollBar verticalBar = channelScrollPane.getVerticalScrollBar();
+            verticalBar.setValue(verticalBar.getMaximum());
+        });
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -130,7 +187,9 @@ public class MainFrame extends javax.swing.JFrame {
         proficonToggleButton = new javax.swing.JToggleButton();
         LeftSidebar = new javax.swing.JSplitPane();
         channelListPanel = new javax.swing.JPanel();
+        channelHeadPanel = new javax.swing.JPanel();
         channelListLabel = new javax.swing.JLabel();
+        newChannelButton = new javax.swing.JButton();
         channelScrollPane = new javax.swing.JScrollPane();
         channelsPanel = new javax.swing.JPanel();
         userListPanel = new javax.swing.JPanel();
@@ -164,29 +223,35 @@ public class MainFrame extends javax.swing.JFrame {
         popupMenu.add(Logout);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(800, 600));
         setResizable(false);
 
         headPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         headPanel.setPreferredSize(new java.awt.Dimension(800, 50));
         headPanel.setLayout(new java.awt.BorderLayout());
 
+        appPanel.setBackground(new java.awt.Color(255, 255, 255));
+        appPanel.setOpaque(false);
+        appPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 3));
+
         appiconLabel.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         appiconLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        appiconLabel.setText("<logo>");
-        appiconLabel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        appiconLabel.setMaximumSize(new java.awt.Dimension(40, 14));
         appiconLabel.setPreferredSize(new java.awt.Dimension(40, 40));
         appPanel.add(appiconLabel);
 
-        appnameLabel.setText("ChatUPT");
+        appnameLabel.setPreferredSize(new java.awt.Dimension(187, 40));
         appPanel.add(appnameLabel);
 
         headPanel.add(appPanel, java.awt.BorderLayout.LINE_START);
 
+        profilePanel.setBackground(new java.awt.Color(255, 255, 255));
+        profilePanel.setOpaque(false);
+
         proficonToggleButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-        proficonToggleButton.setText("<prof>");
-        proficonToggleButton.setBorder(null);
+        proficonToggleButton.setToolTipText("Menu");
+        proficonToggleButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         proficonToggleButton.setComponentPopupMenu(popupMenu);
+        proficonToggleButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         proficonToggleButton.setInheritsPopupMenu(true);
         proficonToggleButton.setPreferredSize(new java.awt.Dimension(40, 40));
         proficonToggleButton.addActionListener(new java.awt.event.ActionListener() {
@@ -204,15 +269,26 @@ public class MainFrame extends javax.swing.JFrame {
         LeftSidebar.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         LeftSidebar.setResizeWeight(0.5);
         LeftSidebar.setToolTipText("");
-        LeftSidebar.setEnabled(false);
         LeftSidebar.setPreferredSize(new java.awt.Dimension(200, 0));
 
         channelListPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         channelListPanel.setLayout(new java.awt.BorderLayout());
 
+        channelHeadPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
         channelListLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         channelListLabel.setText("Channels");
-        channelListPanel.add(channelListLabel, java.awt.BorderLayout.PAGE_START);
+        channelHeadPanel.add(channelListLabel);
+
+        newChannelButton.setText("+");
+        newChannelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newChannelButtonActionPerformed(evt);
+            }
+        });
+        channelHeadPanel.add(newChannelButton);
+
+        channelListPanel.add(channelHeadPanel, java.awt.BorderLayout.NORTH);
 
         channelScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         channelScrollPane.setViewportView(channelsPanel);
@@ -252,8 +328,10 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void proficonToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proficonToggleButtonActionPerformed
         if (proficonToggleButton.isSelected()) {
+            proficonToggleButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
             popupMenu.show(proficonToggleButton, -proficonToggleButton.getWidth(), proficonToggleButton.getHeight());
         } else {
+            proficonToggleButton.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
             popupMenu.setVisible(false);
         }
     }//GEN-LAST:event_proficonToggleButtonActionPerformed
@@ -272,6 +350,47 @@ public class MainFrame extends javax.swing.JFrame {
         loginFrame.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_LogoutActionPerformed
+
+    private void newChannelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newChannelButtonActionPerformed
+         // Create the input field for the channel name
+        JTextField channelNameField = new JTextField(20);
+
+        // Create the checkbox for determining if the channel is private or public
+        JCheckBox privateChannelCheckBox = new JCheckBox("Private Channel");
+        privateChannelCheckBox.setSelected(false); // Default to public (unchecked)
+
+        // Create a panel to hold the form inputs
+        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+        panel.add(new JLabel("Enter Channel Name:"));
+        panel.add(channelNameField);
+        panel.add(privateChannelCheckBox);
+
+        // Show the custom dialog using JOptionPane
+        int result = JOptionPane.showConfirmDialog(
+            null,
+            panel,
+            "Add New Channel",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE
+        );
+
+        // Handle the dialog result
+        if (result == JOptionPane.OK_OPTION) {
+            String channelName = channelNameField.getText().trim();
+            boolean isPrivate = privateChannelCheckBox.isSelected();
+
+            if (!channelName.isEmpty()) {
+                // Here you can handle the creation of the channel
+                int port_number = 0;
+                addChannelToChannelPanel(channelName,port_number);
+                JOptionPane.showMessageDialog(null, "Channel '" + channelName + "' has been created as " + (isPrivate ? "Private" : "Public"));
+            } else {
+                JOptionPane.showMessageDialog(null, "Channel name cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            System.out.println("Channel creation cancelled.");
+        }
+    }//GEN-LAST:event_newChannelButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -300,7 +419,13 @@ public class MainFrame extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-
+        try {
+            // Set the FlatLaf Look and Feel
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -318,6 +443,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel appPanel;
     private javax.swing.JLabel appiconLabel;
     private javax.swing.JLabel appnameLabel;
+    private javax.swing.JPanel channelHeadPanel;
     private javax.swing.JLabel channelListLabel;
     private javax.swing.JPanel channelListPanel;
     private javax.swing.JScrollPane channelScrollPane;
@@ -325,6 +451,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel headPanel;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JButton newChannelButton;
     private javax.swing.JScrollPane onlineUserScrollPane;
     private javax.swing.JPanel onlineUsersPanel;
     private javax.swing.JPopupMenu popupMenu;
