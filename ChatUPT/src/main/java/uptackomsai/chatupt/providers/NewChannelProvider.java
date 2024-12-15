@@ -11,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import uptackomsai.chatupt.model.Channel;
-import uptackomsai.chatupt.model.User;
 import uptackomsai.chatupt.network.ServerModule;
 
 /**

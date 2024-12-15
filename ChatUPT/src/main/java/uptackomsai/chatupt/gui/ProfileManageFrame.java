@@ -6,11 +6,17 @@ package uptackomsai.chatupt.gui;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Image;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import uptackomsai.chatupt.utils.DatabaseUtils;
 import javax.swing.filechooser.FileFilter;
 import uptackomsai.chatupt.utils.ImageLoader;
 
@@ -19,13 +25,14 @@ import uptackomsai.chatupt.utils.ImageLoader;
  * @author Lei
  */
 public class ProfileManageFrame extends javax.swing.JFrame {
-
+    private final int userID;
     /**
      * Creates new form ProfileFrame
+     * @param userID
      */
-    public ProfileManageFrame() { // should pass the userID from the Mainframe
+    public ProfileManageFrame(int userID) { // should pass the userID from the Mainframe
+        this.userID = userID;
         setResizable(false);
-        
         initComponents();
         setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         setTitle("Profile Settings");
@@ -286,7 +293,7 @@ public class ProfileManageFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ProfileManageFrame().setVisible(true);
+                new ProfileManageFrame(-1).setVisible(true);
             }
         });
     }

@@ -7,14 +7,13 @@ import uptackomsai.chatupt.model.Request;
 
 public class Client {
     private final String serverHost;
-    private final int serverPort;
+    private final int serverPort = 54321;
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
 
-    public Client(String serverHost, int serverPort) {
+    public Client(String serverHost) {
         this.serverHost = serverHost;
-        this.serverPort = serverPort;
     }
 
     public void connect(String username) throws IOException {

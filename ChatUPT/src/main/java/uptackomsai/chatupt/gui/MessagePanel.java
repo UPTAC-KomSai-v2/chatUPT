@@ -19,20 +19,33 @@ public class MessagePanel extends javax.swing.JPanel {
 
     /**
      * Creates new form MessagePanel
+     * @param profile_path
+     * @param content
+     * @param username
+     * @param time_sent
+     * @param is_read
+     * @param file_path
      */
-    public MessagePanel(String message) { // Supposed to be JSON format parameter instead of string
+    public MessagePanel(String profile_path, String username, String time_sent, 
+            String content, String file_path, boolean is_read) { 
         initComponents();
         
-        messageTextArea.setText(message);
+        messageTextArea.setText(content);
+        usernameLabel.setText(username);
+        timestampLabel.setText(time_sent);
+        if(is_read) messageStatusLabel.setText("Message Read");
+        if(file_path!=null)
+            attachmentPane.setText("<html>Attachment: <a href='" + file_path + "'>" + file_path + "</a></html>");
         
         profilePicLabel.setIcon(new ImageIcon(
-            ImageLoader.loadImageIcon("default.png").getImage().getScaledInstance(
+            ImageLoader.loadImageIcon(profile_path).getImage().getScaledInstance(
             profilePicLabel.getPreferredSize().width,
             profilePicLabel.getPreferredSize().height,
             Image.SCALE_SMOOTH)
         ));
+        
         // For dynamic height
-        int calculatedHeight = calculateTextAreaHeight(message, 510);
+        int calculatedHeight = calculateTextAreaHeight(content, 510);
         this.setPreferredSize(new Dimension(550,calculatedHeight+66));
 
     }
@@ -71,7 +84,7 @@ public class MessagePanel extends javax.swing.JPanel {
         contentPanel = new javax.swing.JPanel();
         headcontentPanel = new javax.swing.JPanel();
         usernameLabel = new javax.swing.JLabel();
-        timestamptLabel = new javax.swing.JLabel();
+        timestampLabel = new javax.swing.JLabel();
         bodycontentPanel = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         messageTextArea = new javax.swing.JTextArea();
@@ -99,8 +112,8 @@ public class MessagePanel extends javax.swing.JPanel {
         usernameLabel.setText("<username>");
         headcontentPanel.add(usernameLabel);
 
-        timestamptLabel.setText("<timestamp>");
-        headcontentPanel.add(timestamptLabel);
+        timestampLabel.setText("<timestamp>");
+        headcontentPanel.add(timestampLabel);
 
         contentPanel.add(headcontentPanel, java.awt.BorderLayout.PAGE_START);
 
@@ -128,7 +141,7 @@ public class MessagePanel extends javax.swing.JPanel {
         attachmentPanel.setLayout(new java.awt.BorderLayout());
 
         attachmentPane.setEditable(false);
-        attachmentPane.setText("<attachments>");
+        attachmentPane.setContentType("text/html"); // NOI18N
         attachmentPane.setEnabled(false);
         attachmentPanel.add(attachmentPane, java.awt.BorderLayout.CENTER);
 
@@ -153,7 +166,7 @@ public class MessagePanel extends javax.swing.JPanel {
     private javax.swing.JTextArea messageTextArea;
     private javax.swing.JPanel profilePanel;
     private javax.swing.JLabel profilePicLabel;
-    private javax.swing.JLabel timestamptLabel;
+    private javax.swing.JLabel timestampLabel;
     private javax.swing.JLabel usernameLabel;
     // End of variables declaration//GEN-END:variables
 }
