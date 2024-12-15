@@ -6,9 +6,12 @@ package uptackomsai.chatupt.gui;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Image;
+import java.io.File;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileFilter;
 import uptackomsai.chatupt.utils.ImageLoader;
 
 /**
@@ -90,6 +93,11 @@ public class ProfileManageFrame extends javax.swing.JFrame {
         profilepicButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         profilepicButton.setPreferredSize(new java.awt.Dimension(100, 23));
         profilepicButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        profilepicButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                profilepicButtonActionPerformed(evt);
+            }
+        });
         profilepicPreview.add(profilepicButton, java.awt.BorderLayout.SOUTH);
 
         profilepicPanel.add(profilepicPreview);
@@ -197,6 +205,48 @@ public class ProfileManageFrame extends javax.swing.JFrame {
         // update backend 
         this.dispose();
     }//GEN-LAST:event_saveButtonActionPerformed
+
+    private void profilepicButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profilepicButtonActionPerformed
+        // Choose a file to upload
+        JFileChooser fileChooser = new JFileChooser();
+        
+        // Set up the file filter for image files
+        FileFilter imageFilter = new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                // Allow directories or files with specific image extensions
+                if (file.isDirectory()) {
+                    return true;
+                }
+                String fileName = file.getName().toLowerCase();
+                return fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") ||
+                        fileName.endsWith(".png") || fileName.endsWith(".bmp");
+            }
+            @Override
+            public String getDescription() {
+                return "Image Files (*.jpg, *.jpeg, *.png, *.bmp)";
+            }
+        };
+
+        // Set the filter to the file chooser
+        fileChooser.setFileFilter(imageFilter);
+        int returnVal = fileChooser.showOpenDialog(inputPanel);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            
+            String fileName = selectedFile.getName();
+            String filePath = selectedFile.getAbsolutePath();
+            String url = selectedFile.toURI().toString();
+            
+            // Set the profile picture preview into the selectedFile
+            
+            ImageIcon imageIcon = new ImageIcon(selectedFile.getAbsolutePath());
+            Image scaledImage = imageIcon.getImage().getScaledInstance(profilepicPreview.getWidth(), 
+                    profilepicPreview.getHeight(), 
+                    Image.SCALE_SMOOTH);
+            profilepicLabel.setIcon(new ImageIcon(scaledImage));
+        }
+    }//GEN-LAST:event_profilepicButtonActionPerformed
 
     /**
      * @param args the command line arguments
