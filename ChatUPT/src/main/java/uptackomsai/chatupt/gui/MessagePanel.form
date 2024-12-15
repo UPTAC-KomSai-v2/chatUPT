@@ -72,7 +72,7 @@
                 <Property name="text" type="java.lang.String" value="&lt;username&gt;"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="timestamptLabel">
+            <Component class="javax.swing.JLabel" name="timestampLabel">
               <Properties>
                 <Property name="text" type="java.lang.String" value="&lt;timestamp&gt;"/>
               </Properties>
@@ -158,7 +158,7 @@
                 <Component class="javax.swing.JEditorPane" name="attachmentPane">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
-                    <Property name="text" type="java.lang.String" value="&lt;attachments&gt;"/>
+                    <Property name="contentType" type="java.lang.String" value="text/html" noResource="true"/>
                     <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                   <Constraints>

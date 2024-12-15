@@ -20,9 +20,12 @@ import uptackomsai.chatupt.model.User;
  */
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
+import java.sql.SQLException;
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import uptackomsai.chatupt.utils.DatabaseUtils;
 import uptackomsai.chatupt.utils.ImageLoader;
 public class LoginFrame extends javax.swing.JFrame {
 
@@ -43,8 +46,51 @@ public class LoginFrame extends javax.swing.JFrame {
             logoLabel.getPreferredSize().height,
             Image.SCALE_SMOOTH)
         ));
+        
+        passwordField.addActionListener(e -> login()); 
     }
+    
+    private void login(){
+        String username = usernameTextField.getText();
+        String password = new String(passwordField.getPassword()).trim();
 
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Username and password cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try (Socket socket = new Socket("localhost", 12345);
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+            // Create a User object and a Message object for the login request
+            Gson gson = new Gson();
+            User user = new User(username, password, null); // Email is not required for login
+            String userJson = gson.toJson(user);
+            Request message = new Request("login", userJson); // Use the Message class for consistency
+            String jsonMessage = gson.toJson(message);
+
+            // Send login request
+            out.println(jsonMessage);
+
+            // Read server response
+            String response = in.readLine();
+
+            if (response == null) {
+                JOptionPane.showMessageDialog(this, "No response from server.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (response.equalsIgnoreCase("Invalid username or password")||
+                    response.equalsIgnoreCase("Account already logged in")) {
+                JOptionPane.showMessageDialog(this, response, "Login Failed", JOptionPane.ERROR_MESSAGE);
+            } else {
+                MainFrame mainFrame = new MainFrame(Integer.parseInt(response)); // userID parameter from response
+                mainFrame.setVisible(true);
+                this.dispose();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error connecting to server: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -61,7 +107,7 @@ public class LoginFrame extends javax.swing.JFrame {
         usernameLabel = new javax.swing.JLabel();
         usernameTextField = new javax.swing.JTextField();
         passwordLabel = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        passwordField = new javax.swing.JPasswordField();
         loginButton = new javax.swing.JButton();
         leftPadding = new javax.swing.JPanel();
         rightPadding = new javax.swing.JPanel();
@@ -100,8 +146,8 @@ public class LoginFrame extends javax.swing.JFrame {
         passwordLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         center.add(passwordLabel);
 
-        jPasswordField1.setPreferredSize(new java.awt.Dimension(250, 30));
-        center.add(jPasswordField1);
+        passwordField.setPreferredSize(new java.awt.Dimension(250, 30));
+        center.add(passwordField);
 
         loginButton.setText("Login");
         loginButton.addActionListener(new java.awt.event.ActionListener() {
@@ -147,44 +193,7 @@ public class LoginFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_signupButtonActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
-        String username = usernameTextField.getText();
-        String password = new String(jPasswordField1.getPassword()).trim();
-
-        if (username.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Username and password cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try (Socket socket = new Socket("localhost", 12345);
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-
-            // Create a User object and a Message object for the login request
-            Gson gson = new Gson();
-            User user = new User(username, password, null); // Email is not required for login
-            String userJson = gson.toJson(user);
-            Request message = new Request("login", userJson); // Use the Message class for consistency
-            String jsonMessage = gson.toJson(message);
-
-            // Send login request
-            out.println(jsonMessage);
-
-            // Read server response
-            String response = in.readLine();
-
-            if (response == null) {
-                JOptionPane.showMessageDialog(this, "No response from server.", "Error", JOptionPane.ERROR_MESSAGE);
-            } else if (response.equalsIgnoreCase("Invalid username or password")) {
-                JOptionPane.showMessageDialog(this, response, "Login Failed", JOptionPane.ERROR_MESSAGE);
-            } else {
-                MainFrame mainFrame = new MainFrame(Integer.parseInt(response)); // userID parameter from response
-                mainFrame.setVisible(true);
-                this.dispose();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error connecting to server: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        login();
     }//GEN-LAST:event_loginButtonActionPerformed
 
     /**
@@ -235,10 +244,10 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JPanel headPanel;
     private javax.swing.JPanel inputPanel;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JPanel leftPadding;
     private javax.swing.JButton loginButton;
     private javax.swing.JLabel logoLabel;
+    private javax.swing.JPasswordField passwordField;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JPanel rightPadding;
     private javax.swing.JButton signupButton;

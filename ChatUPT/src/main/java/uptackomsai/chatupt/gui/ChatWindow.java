@@ -8,48 +8,170 @@ package uptackomsai.chatupt.gui;
  *
  * @author Lei
  */
-import java.awt.BorderLayout;
-import java.awt.Component;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.awt.Dimension;
+import java.io.BufferedReader;
 import uptackomsai.chatupt.network.Client;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import uptackomsai.chatupt.model.ChatMessage;
+import uptackomsai.chatupt.model.DirectChat;
+import uptackomsai.chatupt.model.Message;
+import uptackomsai.chatupt.model.Request;
+import uptackomsai.chatupt.utils.DatabaseUtils;
 public class ChatWindow extends javax.swing.JPanel {
     private Client client;
+    private String serverHost;
+    private int chatID;
+    private int userID;
+    private boolean isChannel;
     /**
      * Creates new form ChatWindow
      */
-    public ChatWindow(String serverHost, int serverPort, String username) {
+    public ChatWindow(String serverHost,int chatID, int userID ,boolean isChannel) {
+        this.serverHost = serverHost;
+        this.client = new Client(serverHost);
+        this.chatID = chatID;
+        this.userID = userID;
+        this.isChannel = isChannel;
+        
         initComponents();
         
-        // Hide adminPanel if not admin user
-//        adminPanel.setVisible(false); 
-//        revalidate(); 
-//        repaint();
+        initChatWindow();
+        initPrevMessages(chatID,isChannel);
+
+        if(!isChannel) {
+            adminPanel.setVisible(false); 
+            revalidate(); 
+            repaint();
+        } 
+//        
         
-        usernameLabel.setText(username); // supposed to be channel's name or the other user's username
+//        usernameLabel.setText(username); // supposed to be channel's name or the other user's username
         
         // Initialize client and connect to the server
-        client = new Client(serverHost, serverPort);
-        try {
-            client.connect(username);
-            new Thread(() -> {
-                try {
-                    String message;
-                    while ((message = client.receiveMessage()) != null) {
-                        addMessageToMessagesPanel(message); // supposed to be message is in JSON format. 
-//                        chatArea.append(message + "\n");
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).start();
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Failed to connect to server!", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+//        client = new Client(serverHost, serverPort);
+//        try {
+//            client.connect(username);
+//            new Thread(() -> {
+//                try {
+//                    String message;
+//                    while ((message = client.receiveMessage()) != null) {
+//                        addMessageToMessagesPanel(message); // supposed to be message is in JSON format. 
+////                        chatArea.append(message + "\n");
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }).start();
+//        } catch (IOException e) {
+//            JOptionPane.showMessageDialog(this, "Failed to connect to server!", "Error", JOptionPane.ERROR_MESSAGE);
+//        }
 
     }
+    
+    private void initChatWindow() {
+        try (Socket socket = new Socket(serverHost, 12345);
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+            // Prepare the request JSON
+            Gson gson = new Gson();
+            JsonObject requestContent = new JsonObject();
+            requestContent.addProperty("chat_id", chatID);
+            requestContent.addProperty("user_id", userID);
+            requestContent.addProperty("is_channel", isChannel);
+
+            Request serverRequest = new Request("getChatWindowDetails", gson.toJson(requestContent));
+            String jsonRequest = gson.toJson(serverRequest);
+
+            // Send request to server
+            out.println(jsonRequest);
+
+            // Read the server response
+            String response = in.readLine();
+
+            if (response == null) {
+                JOptionPane.showMessageDialog(this, "No response from server.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Parse the response
+            JsonObject responseData = gson.fromJson(response, JsonObject.class);
+            String username = responseData.get("username").getAsString();
+            boolean isOnline = responseData.get("is_online").getAsBoolean();
+
+            // Update the labels
+            usernameLabel.setText(username);
+            activeStatus.setText(isOnline ? "[Online]" : "[Offline]");
+
+            System.out.println("Chat initialized with user: " + username + ", Status: " + (isOnline ? "Online" : "Offline"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error connecting to server: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    
+    private void initPrevMessages(int chatId, boolean isChannel) {
+        try (Socket socket = new Socket(serverHost, 12345);
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+            // Create a ChatMessage object and wrap it in a Request
+            Gson gson = new Gson();
+            ChatMessage chatmessage = new ChatMessage(chatId, isChannel); 
+            String chatmessageJson = gson.toJson(chatmessage);
+            Request request = new Request("prevMessages", chatmessageJson); 
+            String jsonMessage = gson.toJson(request);
+
+            // Send request to the server
+            out.println(jsonMessage);
+
+            // Read server response
+            String response = in.readLine();
+
+            if (response == null) {
+                //JOptionPane.showMessageDialog(this, "No response from server.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (response.equalsIgnoreCase("No messages found!")) {
+                //JOptionPane.showMessageDialog(this, "No messages found in this chat.", "Information", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                // Parse the JSON array of messages received from the server
+                JsonArray messagesArray = gson.fromJson(response, JsonArray.class);
+
+                // Iterate over the JSON array and display the messages
+                for (int i = 0; i < messagesArray.size(); i++) {
+                    JsonObject messageObj = messagesArray.get(i).getAsJsonObject();
+
+                    // Extract message details
+                    String username = messageObj.get("username").getAsString();
+                    String profilePath = messageObj.get("profile_path").getAsString();
+                    String timeSent = messageObj.get("time_sent").getAsString();
+                    String content = messageObj.get("content").getAsString();
+                    String filePath = messageObj.has("file_path") && !messageObj.get("file_path").isJsonNull()
+                            ? messageObj.get("file_path").getAsString() : "No Attachment";
+                    boolean isRead = messageObj.get("is_read").getAsBoolean(); // Add is_read flag
+
+                    // Add the message to the chat window or panel
+                    addMessageToMessagesPanel(profilePath, username, timeSent, content, filePath, isRead);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error connecting to server: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE); 
+        }
+    }
+    
+    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -170,8 +292,10 @@ public class ChatWindow extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_sendButtonActionPerformed
 
-    private void addMessageToMessagesPanel(String message) { //supposed to be a JSON format parameter
-        MessagePanel messagePanel = new MessagePanel(message);
+    private void addMessageToMessagesPanel(String profile_path, String username,
+            String time_sent, String content, String file_path, boolean is_read) { 
+        MessagePanel messagePanel = new MessagePanel(profile_path,username,time_sent, 
+                content,file_path,is_read);
         messagesPanel.add(messagePanel);
         messagesPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Add spacing between panels
         messagesPanel.revalidate(); // Recalculate layout
