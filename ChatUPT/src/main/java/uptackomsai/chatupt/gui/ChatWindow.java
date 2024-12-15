@@ -10,11 +10,14 @@ package uptackomsai.chatupt.gui;
  */
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
+import java.io.File;
 import uptackomsai.chatupt.network.Client;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.net.URISyntaxException;
 public class ChatWindow extends javax.swing.JPanel {
     private Client client;
     /**
@@ -119,13 +122,26 @@ public class ChatWindow extends javax.swing.JPanel {
         inputPanel.setPreferredSize(new java.awt.Dimension(400, 50));
         inputPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
+        attachmentPane.setEditable(false);
+        attachmentPane.setContentType("text/html"); // NOI18N
+        attachmentPane.setText("<html>\r   <head>\r \r   </head>\r   <body>\r     <p style=\"margin-top: 0\">\r            </p>\r   </body>\r </html>\r ");
         attachmentPane.setEnabled(false);
+        attachmentPane.addHyperlinkListener(new javax.swing.event.HyperlinkListener() {
+            public void hyperlinkUpdate(javax.swing.event.HyperlinkEvent evt) {
+                attachmentPaneHyperlinkUpdate(evt);
+            }
+        });
         inputPanel.add(attachmentPane);
 
         attachButton.setText("Attach File");
         attachButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         attachButton.setMargin(new java.awt.Insets(2, 5, 3, 5));
         attachButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        attachButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                attachButtonActionPerformed(evt);
+            }
+        });
         inputPanel.add(attachButton);
 
         inputField.setToolTipText("Enter Message");
@@ -190,6 +206,36 @@ public class ChatWindow extends javax.swing.JPanel {
         AdminFrame adminFrame = new AdminFrame(); 
         adminFrame.setVisible(true);
     }//GEN-LAST:event_adminSettingsActionPerformed
+
+    private void attachButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attachButtonActionPerformed
+        // Choose a file to upload
+        JFileChooser fileChooser = new JFileChooser();
+        int returnVal = fileChooser.showOpenDialog(inputPanel);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            
+            String fileName = selectedFile.getName();
+            String filePath = selectedFile.getAbsolutePath();
+            String url = selectedFile.toURI().toString();
+            
+            attachmentPane.setText("<html><body><a href=\"" + url + "\">" + fileName + "</a></body></html>");            
+        }
+    }//GEN-LAST:event_attachButtonActionPerformed
+
+    private void attachmentPaneHyperlinkUpdate(javax.swing.event.HyperlinkEvent evt) {//GEN-FIRST:event_attachmentPaneHyperlinkUpdate
+        // if the attachPreview hyperlink is clicked, perform this
+        if (evt.getEventType() == javax.swing.event.HyperlinkEvent.EventType.ACTIVATED) {
+            // Open the file
+            try {
+                if (Desktop.isDesktopSupported()) {
+                    // Convert the URL back to a URI and then to a File
+                    Desktop.getDesktop().open(new File(evt.getURL().toURI()));
+                }
+            } catch (IOException | URISyntaxException ex) {
+                JOptionPane.showMessageDialog(inputPanel, "Failed to open the file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_attachmentPaneHyperlinkUpdate
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel activeStatus;
