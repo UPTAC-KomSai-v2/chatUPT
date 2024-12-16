@@ -39,46 +39,21 @@ import uptackomsai.chatupt.utils.ImageLoader;
  */
 public class ProfileManageFrame extends javax.swing.JFrame {
     private final int userID;
+    private String serverHost = "localhost";
     /**
      * Creates new form ProfileFrame
      * @param userID
      */
-    public ProfileManageFrame() { // should pass the userID from the Mainframe
-        // Load environment variables from the .env file
-        Dotenv dotenv = Dotenv.load();
-        socketURL = dotenv.get("SOCKET_URL");
+    public ProfileManageFrame(int userID) { // should pass the userID from the Mainframe
+        this.userID = userID;
 
         setResizable(false);
         initComponents();
         setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         setTitle("Profile Settings");
         setLocationRelativeTo(null);
-        
-        // Dynamically get username of user
-        try{
-            Gson gson = new Gson();
-            // Connect to the server and send registration request
-            Socket socket = new Socket(socketURL, 12345); // Assuming server is on localhost
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            // Create a update request message
-            Request message = new Request("userData", null); // Use Message structure
-            String jsonMessage = gson.toJson(message);
-
-            // Send registration request to server
-            out.println(jsonMessage);
-
-            // Read response from server
-            JsonObject jsonObject = JsonParser.parseString(in.readLine()).getAsJsonObject();
-            userID = jsonObject.get("username").getAsString();
-
-            // Close the connection
-            socket.close();
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Failed to connect to server: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        usernameTextField.setText(userID);
+        usernameTextField.setText(String.valueOf(userID));
         
         profilepicLabel.setIcon(new ImageIcon(
             ImageLoader.loadImageIcon("default.png").getImage().getScaledInstance(
@@ -277,7 +252,7 @@ public class ProfileManageFrame extends javax.swing.JFrame {
         }
         try{
             // Connect to the server and send registration request
-            Socket socket = new Socket(socketURL, 12345); // Assuming server is on localhost
+            Socket socket = new Socket(serverHost, 12345); // Assuming server is on localhost
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
