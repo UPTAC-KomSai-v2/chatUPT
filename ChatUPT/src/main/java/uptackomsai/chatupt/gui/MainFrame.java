@@ -46,6 +46,7 @@ import uptackomsai.chatupt.model.Request;
 import uptackomsai.chatupt.model.UserChannel;
 import uptackomsai.chatupt.model.UserRole;
 import uptackomsai.chatupt.utils.DatabaseUtils;
+import uptackomsai.chatupt.utils.SessionUtil;
 /**
  *
  * @author Lei
@@ -531,6 +532,10 @@ public class MainFrame extends javax.swing.JFrame {
 
             // Read server response
             String response = in.readLine();
+            
+            // Destroy Session variable
+            SessionUtil.sessionUserId = -1;
+            SessionUtil.sessionUsername = null;
 
             if ("success".equalsIgnoreCase(response)) {
                 System.out.println("User logged out successfully.");
