@@ -13,6 +13,7 @@ import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import uptackomsai.chatupt.network.Client;
 import uptackomsai.chatupt.utils.ImageLoader;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.google.gson.Gson;

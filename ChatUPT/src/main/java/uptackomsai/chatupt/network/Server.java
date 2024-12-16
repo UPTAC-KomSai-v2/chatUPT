@@ -241,6 +241,15 @@ public class Server {
                             System.out.println("Getting the attachment metadata: " + request.getContent());
                             handleFileUpload(request.getContent(), dataIn);
                             break;
+                        case "userData": // Handle Get Username
+                            System.out.println("Getting username: " + request.getContent());
+                            for (ServerModule module : modules) {
+                                if (module instanceof UserDataProvider) {
+                                    module.handleRequest(request.getType(), request.getContent(), out);
+                                    break;
+                                }
+                            }
+                            break;
                         default:
                             System.err.println("Unknown request type: " + request.getType());
                     }
@@ -334,7 +343,9 @@ public class Server {
         server.registerModule(new SetUserOnlineProvider());
         server.registerModule(new GetChatWindowDetailsProvider());
         server.registerModule(new MessageHandlerProvider());
-                
+        server.registerModule(new EditProfileProvider());
+        server.registerModule(new UserDataProvider());
+        
         DbBaseProvider db = new DbBaseProvider();
         db.setupDatabase();
         server.start();

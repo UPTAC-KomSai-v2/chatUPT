@@ -4,20 +4,33 @@
  */
 package uptackomsai.chatupt.gui;
 
+import com.google.gson.Gson;
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import uptackomsai.chatupt.utils.DatabaseUtils;
 import javax.swing.filechooser.FileFilter;
+
+import io.github.cdimascio.dotenv.Dotenv;
+import uptackomsai.chatupt.model.Request;
+import uptackomsai.chatupt.model.User;
 import uptackomsai.chatupt.utils.ImageLoader;
 
 /**
@@ -30,13 +43,42 @@ public class ProfileManageFrame extends javax.swing.JFrame {
      * Creates new form ProfileFrame
      * @param userID
      */
-    public ProfileManageFrame(int userID) { // should pass the userID from the Mainframe
-        this.userID = userID;
+    public ProfileManageFrame() { // should pass the userID from the Mainframe
+        // Load environment variables from the .env file
+        Dotenv dotenv = Dotenv.load();
+        socketURL = dotenv.get("SOCKET_URL");
+
         setResizable(false);
         initComponents();
         setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         setTitle("Profile Settings");
         setLocationRelativeTo(null);
+        
+        // Dynamically get username of user
+        try{
+            Gson gson = new Gson();
+            // Connect to the server and send registration request
+            Socket socket = new Socket(socketURL, 12345); // Assuming server is on localhost
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            // Create a update request message
+            Request message = new Request("userData", null); // Use Message structure
+            String jsonMessage = gson.toJson(message);
+
+            // Send registration request to server
+            out.println(jsonMessage);
+
+            // Read response from server
+            JsonObject jsonObject = JsonParser.parseString(in.readLine()).getAsJsonObject();
+            userID = jsonObject.get("username").getAsString();
+
+            // Close the connection
+            socket.close();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Failed to connect to server: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        usernameTextField.setText(userID);
         
         profilepicLabel.setIcon(new ImageIcon(
             ImageLoader.loadImageIcon("default.png").getImage().getScaledInstance(
@@ -84,6 +126,7 @@ public class ProfileManageFrame extends javax.swing.JFrame {
         footerPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new java.awt.BorderLayout());
 
         borderPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         borderPanel.setLayout(new java.awt.BorderLayout());
@@ -120,6 +163,7 @@ public class ProfileManageFrame extends javax.swing.JFrame {
         usernameLabel.setText("Username");
         center.add(usernameLabel);
 
+        usernameTextField.setEditable(false);
         usernameTextField.setText("Current Username");
         usernameTextField.setPreferredSize(new java.awt.Dimension(250, 30));
         center.add(usernameTextField);
@@ -210,6 +254,49 @@ public class ProfileManageFrame extends javax.swing.JFrame {
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         // update backend 
+        // Create a JSON object for user registration
+        Gson gson = new Gson();
+        
+        String username = usernameTextField.getText().trim();
+        String currentPass = new String(currentpassField.getPassword()).trim();
+        String password = new String(newpassField.getPassword()).trim();
+        String confirmPassword = new String(newpass2Field.getPassword()).trim();
+        String email = emailTextField.getText().trim();
+        
+        User user = new User(username, password, email);
+        String userJson = gson.toJson(user);
+        
+        if (!password.equals(confirmPassword)) {
+            JOptionPane.showMessageDialog(this, "Passwords do not match!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (currentPass.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Current password field is required!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        try{
+            // Connect to the server and send registration request
+            Socket socket = new Socket(socketURL, 12345); // Assuming server is on localhost
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            // Create a update request message
+            Request message = new Request("editProfile", userJson); // Use Message structure
+            String jsonMessage = gson.toJson(message);
+
+            // Send registration request to server
+            out.println(jsonMessage);
+
+            // Read response from server
+            String response = in.readLine();
+            JOptionPane.showMessageDialog(this, response, "Server Response", JOptionPane.INFORMATION_MESSAGE);
+
+            // Close the connection
+            socket.close();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Failed to connect to server: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
         this.dispose();
     }//GEN-LAST:event_saveButtonActionPerformed
 

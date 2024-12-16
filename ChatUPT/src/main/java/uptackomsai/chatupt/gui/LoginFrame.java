@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import javax.swing.JOptionPane;
+
+import io.github.cdimascio.dotenv.Dotenv;
 import uptackomsai.chatupt.model.Request;
 import uptackomsai.chatupt.model.User;
 
