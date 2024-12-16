@@ -212,6 +212,10 @@ public class Server {
                             System.out.println("Getting other user's username and status: " + request.getContent());
                             for (ServerModule module : modules) {
                                 if (module instanceof GetChatWindowDetailsProvider) {
+                                    module.handleRequest(request.getType(), request.getContent(), out);
+                                    break;
+                                }
+                            }
                         case "editProfile": // Handle edit profile
                             System.out.println("Processing Edit Profile: " + request.getContent());
                             for (ServerModule module : modules) {
@@ -220,7 +224,6 @@ public class Server {
                                     break;
                                 }
                             }
-                            break;
                         default:
                             System.err.println("Unknown request type: " + request.getType());
                     }
