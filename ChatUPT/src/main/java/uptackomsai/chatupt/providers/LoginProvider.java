@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import uptackomsai.chatupt.model.User;
 import uptackomsai.chatupt.network.ServerModule;
 import org.mindrot.jbcrypt.BCrypt; // Import BCrypt library
+import uptackomsai.chatupt.utils.SessionUtil;
 
 import java.io.PrintWriter;
 import java.sql.*;
@@ -27,6 +28,8 @@ public class LoginProvider implements ServerModule {
 
                 // Compare the stored hashed password with the entered password
                 if (BCrypt.checkpw(user.getPassword(), storedPassword)) {
+                    SessionUtil.sessionUsername = user.getUsername();
+                    SessionUtil.sessionUserId = userId;
                     return true; // Authentication successful
                 }
             }
