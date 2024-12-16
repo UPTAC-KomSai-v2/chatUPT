@@ -48,7 +48,7 @@ public class ChatWindow extends javax.swing.JPanel {
      */
     public ChatWindow(String serverHost,int chatID, int userID ,boolean isChannel) {
         this.serverHost = serverHost;
-        this.client = new ChatServer(serverHost);
+//        this.client = new ChatServer(serverHost);
         this.chatID = chatID;
         this.userID = userID;
         this.isChannel = isChannel;
