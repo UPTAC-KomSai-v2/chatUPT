@@ -26,11 +26,12 @@ import uptackomsai.chatupt.utils.ImageLoader;
  * @author Lei
  */
 public class SignupFrame extends javax.swing.JFrame {
-
+    private String serverHost = "localhost";
     /**
      * Creates new form SignupFrame
      */
-    public SignupFrame() {
+    public SignupFrame(String serverHost) {
+        this.serverHost = serverHost;
         setResizable(false);
         
         initComponents();
@@ -206,7 +207,7 @@ public class SignupFrame extends javax.swing.JFrame {
             String userJson = gson.toJson(user);
 
             // Connect to the server and send registration request
-            Socket socket = new Socket("localhost", 12345); // Assuming server is on localhost
+            Socket socket = new Socket(serverHost, 12345); // Assuming server is on localhost
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -272,7 +273,7 @@ public class SignupFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new SignupFrame().setVisible(true);
+                new SignupFrame("localhost").setVisible(true);
             }
         });
     }

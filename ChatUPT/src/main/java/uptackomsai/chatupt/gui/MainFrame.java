@@ -50,14 +50,15 @@ import uptackomsai.chatupt.utils.DatabaseUtils;
  * @author Lei
  */
 public class MainFrame extends javax.swing.JFrame {
-    private final String serverHost = "localhost";
+    private String serverHost = "localhost";
     private final int userID;
     DatabaseUtils dbUtils = new DatabaseUtils();
     /**
      * Creates new form ChatFrame
      * @param userID
      */
-    public MainFrame(int userID) { // UserID is received here instead of username
+    public MainFrame(String serverHost, int userID) { // UserID is received here instead of username
+        this.serverHost = serverHost;
         this.userID = userID;
         setUserOnline(userID);
         setResizable(false);
@@ -669,6 +670,21 @@ public class MainFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                formMouseEntered(evt);
+            }
+        });
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
 
         headPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         headPanel.setPreferredSize(new java.awt.Dimension(800, 50));
@@ -843,6 +859,24 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_newChannelButtonActionPerformed
 
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        initializeChannelList();
+        initializeOnlineUserList();
+        initializeAllUserList();
+    }//GEN-LAST:event_formMouseMoved
+
+    private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
+        initializeChannelList();
+        initializeOnlineUserList();
+        initializeAllUserList();
+    }//GEN-LAST:event_formMouseEntered
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        initializeChannelList();
+        initializeOnlineUserList();
+        initializeAllUserList();
+    }//GEN-LAST:event_formKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -880,7 +914,7 @@ public class MainFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainFrame(-1).setVisible(true); 
+                new MainFrame("localhost",-1).setVisible(true); 
             }
         });
     }

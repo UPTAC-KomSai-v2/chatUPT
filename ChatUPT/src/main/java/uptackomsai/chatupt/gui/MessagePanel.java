@@ -34,6 +34,7 @@ public class MessagePanel extends javax.swing.JPanel {
         usernameLabel.setText(username);
         timestampLabel.setText(time_sent);
         if(is_read) messageStatusLabel.setText("Message Read");
+        else messageStatusLabel.setText("Message Delivered");
         if(file_path!=null)
             attachmentPane.setText("<html>Attachment: <a href='" + file_path + "'>" + file_path + "</a></html>");
         

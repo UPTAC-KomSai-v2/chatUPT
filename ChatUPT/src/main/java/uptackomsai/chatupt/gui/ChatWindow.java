@@ -17,6 +17,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.WindowAdapter;
 import java.io.File;
 import uptackomsai.chatupt.network.Client;
 import javax.swing.*;
@@ -32,9 +34,10 @@ import uptackomsai.chatupt.model.Message;
 import uptackomsai.chatupt.model.Request;
 import uptackomsai.chatupt.utils.DatabaseUtils;
 import java.net.URISyntaxException;
+import uptackomsai.chatupt.network.ChatServer;
 
 public class ChatWindow extends javax.swing.JPanel {
-    private Client client;
+    private ChatServer client;
     private String serverHost;
     private int chatID;
     private int userID;
@@ -45,7 +48,7 @@ public class ChatWindow extends javax.swing.JPanel {
      */
     public ChatWindow(String serverHost,int chatID, int userID ,boolean isChannel) {
         this.serverHost = serverHost;
-        this.client = new Client(serverHost);
+        this.client = new ChatServer(serverHost);
         this.chatID = chatID;
         this.userID = userID;
         this.isChannel = isChannel;
@@ -60,29 +63,8 @@ public class ChatWindow extends javax.swing.JPanel {
             revalidate(); 
             repaint();
         } 
-//        
         
-//        usernameLabel.setText(username); // supposed to be channel's name or the other user's username
         
-        // Initialize client and connect to the server
-//        client = new Client(serverHost, serverPort);
-//        try {
-//            client.connect(username);
-//            new Thread(() -> {
-//                try {
-//                    String message;
-//                    while ((message = client.receiveMessage()) != null) {
-//                        addMessageToMessagesPanel(message); // supposed to be message is in JSON format. 
-////                        chatArea.append(message + "\n");
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }).start();
-//        } catch (IOException e) {
-//            JOptionPane.showMessageDialog(this, "Failed to connect to server!", "Error", JOptionPane.ERROR_MESSAGE);
-//        }
-
     }
     
     private void initChatWindow() {
@@ -130,6 +112,9 @@ public class ChatWindow extends javax.swing.JPanel {
 
     
     private void initPrevMessages(int chatId, boolean isChannel) {
+        messagesPanel.removeAll(); // Remove all components
+        messagesPanel.revalidate(); // Recalculate layout
+        messagesPanel.repaint(); 
         try (Socket socket = new Socket(serverHost, 12345);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
@@ -169,6 +154,7 @@ public class ChatWindow extends javax.swing.JPanel {
                     boolean isRead = messageObj.get("is_read").getAsBoolean(); // Add is_read flag
 
                     // Add the message to the chat window or panel
+                    
                     addMessageToMessagesPanel(profilePath, username, timeSent, content, filePath, isRead);
                 }
             }
@@ -205,6 +191,21 @@ public class ChatWindow extends javax.swing.JPanel {
         sendButton = new javax.swing.JButton();
 
         setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
+        });
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                formMouseEntered(evt);
+            }
+        });
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
         setLayout(new java.awt.BorderLayout());
 
         headPanel.setLayout(new java.awt.BorderLayout());
@@ -217,8 +218,6 @@ public class ChatWindow extends javax.swing.JPanel {
         activeStatus.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         activeStatus.setText("<active_status>");
         chatheaderPanel.add(activeStatus);
-
-        typingIndicator.setText("<typing_indicator>");
         chatheaderPanel.add(typingIndicator);
 
         headPanel.add(chatheaderPanel, java.awt.BorderLayout.LINE_START);
@@ -305,82 +304,71 @@ public class ChatWindow extends javax.swing.JPanel {
     }
     
     private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
-        String message = inputField.getText();
-        
-        try {
-            if (client != null) {
-                client.connect("joe"); // Replace "joe" with actual user information, for testing
+        String content = inputField.getText();
+        String attachmentPath = attachmentPane.getText().trim(); // File path for attachments
+
+        if (!content.trim().isEmpty() || !attachmentPath.isEmpty()) {
+            try (Socket socket = new Socket(serverHost, 12345);
+                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+                // Create the current timestamp
+                String timeSent = java.time.LocalDateTime.now().toString();
+
+                // Prepare the Message object
+                Message message = new Message(
+                        this.chatID,                // chat_id
+                        null,                       // profile_path (will be filled by server)
+                        this.userID,                // user_id
+                        null,                       // username (will be filled by server)
+                        timeSent,                   // time_sent
+                        content,                    // content
+                        attachmentPath,             // file_path
+                        false                       // is_read (default: false)
+                );
+
+                // Wrap the Message object in a Request
+                Gson gson = new Gson();
+                String messageJson = gson.toJson(message);
+                Request request = new Request("sendMessage", messageJson);
+
+                // Send the request to the server
+                out.println(gson.toJson(request));
+
+                // Read the server response
+                String response = in.readLine();
+                if (response == null) {
+                    JOptionPane.showMessageDialog(this, "No response from server.", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if (response.equalsIgnoreCase("failure")) {
+                    JOptionPane.showMessageDialog(this, "Failed to send message.", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    // Parse the JSON response from the server
+                    JsonObject messageObj = gson.fromJson(response, JsonObject.class);
+
+                    // Extract message details
+                    int chatId = messageObj.get("chat_id").getAsInt();
+                    String profilePath = messageObj.get("profile_path").getAsString();
+                    String username = messageObj.get("username").getAsString();
+                    String time = messageObj.get("time_sent").getAsString();
+                    String messageContent = messageObj.get("content").getAsString();
+                    String filePath = messageObj.has("file_path") && !messageObj.get("file_path").isJsonNull()
+                            ? messageObj.get("file_path").getAsString() : "";
+
+                    // Add the message to the chat panel
+                    initPrevMessages(chatId, false);
+                    //addMessageToMessagesPanel(profilePath, username, time, messageContent, filePath, false);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error connecting to server: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-            if ((attachedFile != null) && 
-                    ((!message.trim().isEmpty()) || message.trim().isEmpty())) {
-                // SEND FILE TO SERVER FIRST, THEN SEND MESSAGE TO SERVER SECOND
-               
-                // send and upload file to server
-                client.uploadFileToServer(attachedFile);
-           
-                // extract file metadata
-                String file_name = attachedFile.getName();
-                String file_path = attachedFile.getAbsolutePath();
-                int dotIndex = file_name.lastIndexOf('.');
-                String file_type = file_name.substring(dotIndex + 1);
-                int file_size = (int) attachedFile.length();
-                
-                // Clear attachment pane and reset file attachment
-                attachmentPane.setText("<html><head></head><body><p style=\"margin-top: 0\"> </p> </body> </html>");
-                attachedFile = null;
-                
-                // read server response
-                
-                // NOTE: use the file_name above and server response file_path in newMessage request
-            /*
 
-                // Create a Message object and wrap it in a Request
-                Gson gson = new Gson();
-                Message newMessage = new Message(profile_path, user_id, username, time_sent, content, file_name, file_path, is_read);
-                // Message message = new Message("profile/path", 1, "username", String.valueOf(System.currentTimeMillis()),
-                // message, null, null,false);
-                String newmessageJson = gson.toJson(newMessage);
-                Request request = new Request("prevMessages", newmessageJson); 
-                String jsonMessage = gson.toJson(request);
-
-                // Send request to the server
-                out.println(jsonMessage);
-                inputField.setText("");
-                
-                // Read server response
-                String response = in.readLine();
-            */
-                
-           } else if (!message.trim().isEmpty()) {
-            /*
-                // Create a Message object and wrap it in a Request
-                Gson gson = new Gson();
-                Message newMessage = new Message(profile_path, user_id, username, time_sent, content, file_name, file_path, is_read);
-                // Message message = new Message("profile/path", 1, "username", String.valueOf(System.currentTimeMillis()),
-                // message, null, null,false);
-                String newmessageJson = gson.toJson(newMessage);
-                Request request = new Request("newMessage", newmessageJson); 
-                String jsonMessage = gson.toJson(request);
-
-                // Send request to the server
-                out.println(jsonMessage);
-                inputField.setText("");
-                
-                // Read server response
-                String response = in.readLine();
-                
-                // Add the message to the chat window or panel
-                addMessageToMessagesPanel(profilePath, username, timeSent, content, filePath, isRead);
-            */
-                
-           }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Failed to upload file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-         }
-        
+            // Clear the input field
+            inputField.setText("");
+        }
     }//GEN-LAST:event_sendButtonActionPerformed
-
+    
     private void addMessageToMessagesPanel(String profile_path, String username,
             String time_sent, String content, String file_path, boolean is_read) { 
         MessagePanel messagePanel = new MessagePanel(profile_path,username,time_sent, 
@@ -439,6 +427,18 @@ public class ChatWindow extends javax.swing.JPanel {
             }
         }
     }//GEN-LAST:event_attachmentPaneHyperlinkUpdate
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        initPrevMessages(chatID, false);
+    }//GEN-LAST:event_formMouseMoved
+
+    private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
+        initPrevMessages(chatID, false);
+    }//GEN-LAST:event_formMouseEntered
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        initPrevMessages(chatID, false);
+    }//GEN-LAST:event_formKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel activeStatus;

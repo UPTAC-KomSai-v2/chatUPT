@@ -22,17 +22,24 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
+import java.util.regex.Pattern;
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import uptackomsai.chatupt.utils.DatabaseUtils;
 import uptackomsai.chatupt.utils.ImageLoader;
 public class LoginFrame extends javax.swing.JFrame {
-
+    private String serverHost = "localhost";
     /**
      * Creates new form LoginFrame
      */
     public LoginFrame() {
+        
+        
+        // Proceed with the application using the provided serverHost
+        System.out.println("Server Host: " + serverHost);
+        
         setResizable(false);
         
         initComponents();
@@ -47,6 +54,7 @@ public class LoginFrame extends javax.swing.JFrame {
             Image.SCALE_SMOOTH)
         ));
         
+        
         passwordField.addActionListener(e -> login()); 
     }
     
@@ -59,7 +67,7 @@ public class LoginFrame extends javax.swing.JFrame {
             return;
         }
 
-        try (Socket socket = new Socket("localhost", 12345);
+        try (Socket socket = new Socket(serverHostField.getText(), 12345);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
@@ -82,7 +90,7 @@ public class LoginFrame extends javax.swing.JFrame {
                     response.equalsIgnoreCase("Account already logged in")) {
                 JOptionPane.showMessageDialog(this, response, "Login Failed", JOptionPane.ERROR_MESSAGE);
             } else {
-                MainFrame mainFrame = new MainFrame(Integer.parseInt(response)); // userID parameter from response
+                MainFrame mainFrame = new MainFrame(serverHost,Integer.parseInt(response)); // userID parameter from response
                 mainFrame.setVisible(true);
                 this.dispose();
             }
@@ -104,6 +112,9 @@ public class LoginFrame extends javax.swing.JFrame {
         logoLabel = new javax.swing.JLabel();
         inputPanel = new javax.swing.JPanel();
         center = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        serverHostField = new javax.swing.JTextField();
         usernameLabel = new javax.swing.JLabel();
         usernameTextField = new javax.swing.JTextField();
         passwordLabel = new javax.swing.JLabel();
@@ -127,11 +138,25 @@ public class LoginFrame extends javax.swing.JFrame {
 
         getContentPane().add(headPanel, java.awt.BorderLayout.PAGE_START);
 
-        inputPanel.setPreferredSize(new java.awt.Dimension(400, 150));
+        inputPanel.setPreferredSize(new java.awt.Dimension(400, 185));
         inputPanel.setLayout(new java.awt.BorderLayout());
 
-        center.setPreferredSize(new java.awt.Dimension(250, 150));
-        center.setLayout(new java.awt.GridLayout(5, 0, 0, 5));
+        center.setPreferredSize(new java.awt.Dimension(250, 185));
+        center.setLayout(new java.awt.GridLayout(6, 0, 0, 5));
+
+        jLabel2.setText("Server Host");
+        jLabel2.setToolTipText("");
+        jPanel1.add(jLabel2);
+
+        serverHostField.setText("localhost");
+        serverHostField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                serverHostFieldActionPerformed(evt);
+            }
+        });
+        jPanel1.add(serverHostField);
+
+        center.add(jPanel1);
 
         usernameLabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         usernameLabel.setText("Username ");
@@ -187,7 +212,7 @@ public class LoginFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void signupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signupButtonActionPerformed
-        SignupFrame signupFrame = new SignupFrame(); // Open SettingsFrame
+        SignupFrame signupFrame = new SignupFrame(serverHostField.getText()); // Open SettingsFrame
         signupFrame.setVisible(true); // Show the new frame
         this.dispose(); 
     }//GEN-LAST:event_signupButtonActionPerformed
@@ -195,6 +220,10 @@ public class LoginFrame extends javax.swing.JFrame {
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         login();
     }//GEN-LAST:event_loginButtonActionPerformed
+
+    private void serverHostFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverHostFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_serverHostFieldActionPerformed
 
     /**
      * @param args the command line arguments
@@ -230,11 +259,12 @@ public class LoginFrame extends javax.swing.JFrame {
             e.printStackTrace();
         }
         
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new LoginFrame().setVisible(true);
-            }
+        
+
+        // Initialize the login screen or main application logic
+        SwingUtilities.invokeLater(() -> {
+            LoginFrame loginFrame = new LoginFrame(); // Pass serverHost to login
+            loginFrame.setVisible(true);
         });
     }
 
@@ -244,12 +274,15 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JPanel headPanel;
     private javax.swing.JPanel inputPanel;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel leftPadding;
     private javax.swing.JButton loginButton;
     private javax.swing.JLabel logoLabel;
     private javax.swing.JPasswordField passwordField;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JPanel rightPadding;
+    private javax.swing.JTextField serverHostField;
     private javax.swing.JButton signupButton;
     private javax.swing.JLabel usernameLabel;
     private javax.swing.JTextField usernameTextField;

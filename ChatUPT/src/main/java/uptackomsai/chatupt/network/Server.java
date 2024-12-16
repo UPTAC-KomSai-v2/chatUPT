@@ -21,6 +21,7 @@ import uptackomsai.chatupt.providers.GetOnlineUsersProvider;
 import uptackomsai.chatupt.providers.GetUserByIdProvider;
 import uptackomsai.chatupt.providers.JoinChannelProvider;
 import uptackomsai.chatupt.providers.LoginProvider;
+import uptackomsai.chatupt.providers.MessageHandlerProvider;
 import uptackomsai.chatupt.providers.NewChannelProvider;
 import uptackomsai.chatupt.providers.NewDirectChatProvider;
 import uptackomsai.chatupt.providers.SetUserOfflineProvider;
@@ -227,6 +228,14 @@ public class Server {
                                     break;
                                 }
                             }
+                        case "sendMessage":  // setting up chatwindow
+                            System.out.println("Sending message: " + request.getContent());
+                            for (ServerModule module : modules) {
+                                if (module instanceof MessageHandlerProvider) {
+                                    module.handleRequest(request.getType(), request.getContent(), out);
+                                    break;
+                                }
+                            }
                             break;
                         case "uploadAttachment":  // Handle file attachment
                             System.out.println("Getting the attachment metadata: " + request.getContent());
@@ -325,6 +334,8 @@ public class Server {
         server.registerModule(new SetUserOnlineProvider());
         server.registerModule(new GetChatWindowDetailsProvider());
         
+        server.registerModule(new MessageHandlerProvider());
+                
         DbBaseProvider db = new DbBaseProvider();
         db.setupDatabase();
         server.start();
