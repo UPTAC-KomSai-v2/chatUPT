@@ -39,9 +39,10 @@ public class GetChatWindowDetailsProvider implements ServerModule {
 
             // Query to find the other user in the chat
             String query = """
-                SELECT u.username, u.is_online
+                SELECT u.username, u.is_online, c.channel_name
                 FROM User u
                 JOIN User_Chat uc ON u.user_id = uc.user_id
+                LEFT JOIN Channel c ON c.chat_id = uc.chat_id
                 WHERE uc.chat_id = ? AND u.user_id != ?
             """;
 
@@ -53,10 +54,11 @@ public class GetChatWindowDetailsProvider implements ServerModule {
                 JsonObject response = new JsonObject();
 
                 if (rs.next()) {
-                    response.addProperty("username", rs.getString("username"));
+                    if(isChannel) response.addProperty("chatname", rs.getString("channel_name"));
+                    else response.addProperty("chatname", rs.getString("username"));
                     response.addProperty("is_online", rs.getBoolean("is_online"));
                 } else {
-                    response.addProperty("username", "Unknown");
+                    response.addProperty("chatname", "Unknown");
                     response.addProperty("is_online", false);
                 }
 
