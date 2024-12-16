@@ -6,7 +6,8 @@ import java.util.concurrent.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import uptackomsai.chatupt.model.Request;
-import uptackomsai.chatupt.providers.RegisterProvider;
+import uptackomsai.chatupt.providers.*;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
@@ -218,7 +219,16 @@ public class Server {
                                 }
                             }
                             break;
-                        case "uploadAttachment":  // setting up chatwindow
+                        case "editProfile": // Handle edit profile
+                            System.out.println("Processing Edit Profile: " + request.getContent());
+                            for (ServerModule module : modules) {
+                                if (module instanceof EditProfileProvider) {
+                                    module.handleRequest(request.getType(), request.getContent(), out);
+                                    break;
+                                }
+                            }
+                            break;
+                        case "uploadAttachment":  // Handle file attachment
                             System.out.println("Getting the attachment metadata: " + request.getContent());
                             handleFileUpload(request.getContent(), dataIn);
                             break;
