@@ -21,6 +21,8 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
+
+import io.github.cdimascio.dotenv.Dotenv;
 import uptackomsai.chatupt.model.Request;
 import uptackomsai.chatupt.model.User;
 import uptackomsai.chatupt.utils.ImageLoader;
@@ -31,10 +33,15 @@ import uptackomsai.chatupt.utils.ImageLoader;
  */
 public class ProfileManageFrame extends javax.swing.JFrame {
     String userID;
+    String socketURL;
     /**
      * Creates new form ProfileFrame
      */
     public ProfileManageFrame() { // should pass the userID from the Mainframe
+        // Load environment variables from the .env file
+        Dotenv dotenv = Dotenv.load();
+        socketURL = dotenv.get("SOCKET_URL");
+
         setResizable(false);
         
         initComponents();
@@ -46,7 +53,7 @@ public class ProfileManageFrame extends javax.swing.JFrame {
         try{
             Gson gson = new Gson();
             // Connect to the server and send registration request
-            Socket socket = new Socket("localhost", 12345); // Assuming server is on localhost
+            Socket socket = new Socket(socketURL, 12345); // Assuming server is on localhost
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -265,7 +272,7 @@ public class ProfileManageFrame extends javax.swing.JFrame {
         }
         try{
             // Connect to the server and send registration request
-            Socket socket = new Socket("localhost", 12345); // Assuming server is on localhost
+            Socket socket = new Socket(socketURL, 12345); // Assuming server is on localhost
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 

@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import javax.swing.JOptionPane;
+
+import io.github.cdimascio.dotenv.Dotenv;
 import uptackomsai.chatupt.model.Request;
 import uptackomsai.chatupt.model.User;
 
@@ -25,11 +27,15 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import uptackomsai.chatupt.utils.ImageLoader;
 public class LoginFrame extends javax.swing.JFrame {
-
+    String socketURL;
     /**
      * Creates new form LoginFrame
      */
     public LoginFrame() {
+        // Load environment variables from the .env file
+        Dotenv dotenv = Dotenv.load();
+
+        socketURL = dotenv.get("SOCKET_URL");
         setResizable(false);
         
         initComponents();
@@ -155,7 +161,7 @@ public class LoginFrame extends javax.swing.JFrame {
             return;
         }
 
-        try (Socket socket = new Socket("localhost", 12345);
+        try (Socket socket = new Socket(socketURL, 12345);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 

@@ -14,6 +14,8 @@ import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+
+import io.github.cdimascio.dotenv.Dotenv;
 import uptackomsai.chatupt.network.Client;
 import uptackomsai.chatupt.utils.ImageLoader;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -49,12 +51,17 @@ import uptackomsai.chatupt.utils.DatabaseUtils;
  * @author Lei
  */
 public class MainFrame extends javax.swing.JFrame {
+    String socketURL;
     private final int userID;
     /**
      * Creates new form ChatFrame
      * @param userID
      */
     public MainFrame(int userID) { // UserID is received here instead of username
+        // Load environment variables from the .env file
+        Dotenv dotenv = Dotenv.load();
+        socketURL = dotenv.get("SOCKET_URL");
+
         this.userID = userID;
         setResizable(false);
         initComponents();
@@ -201,7 +208,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
     
     public void addChannel(String channelName, boolean isPrivate) {
-        try (Socket socket = new Socket("localhost", 12345);
+        try (Socket socket = new Socket(socketURL, 12345);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
