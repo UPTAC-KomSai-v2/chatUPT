@@ -92,7 +92,7 @@ public class LoginFrame extends javax.swing.JFrame {
                     response.equalsIgnoreCase("Account already logged in")) {
                 JOptionPane.showMessageDialog(this, response, "Login Failed", JOptionPane.ERROR_MESSAGE);
             } else {
-                MainFrame mainFrame = new MainFrame(serverHost,Integer.parseInt(response)); // userID parameter from response
+                MainFrame mainFrame = new MainFrame(serverHostField.getText(),Integer.parseInt(response)); // userID parameter from response
                 mainFrame.setVisible(true);
                 this.dispose();
             }
