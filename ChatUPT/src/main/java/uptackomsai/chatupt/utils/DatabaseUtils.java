@@ -109,7 +109,7 @@ public class DatabaseUtils {
             WHERE 
                 c.chat_id = ?
             ORDER BY
-                m.time_sent DESC;
+                m.time_sent ASC;
         """;
         PreparedStatement stmt = dbConnection.prepareStatement(query);
         stmt.setInt(1, chatId); // Set the chat_id to filter messages
