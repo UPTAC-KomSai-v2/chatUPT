@@ -179,7 +179,7 @@ public class SignupFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-//        new LoginFrame().setVisible(true); 
+        new LoginFrame().setVisible(true); 
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
@@ -233,7 +233,7 @@ public class SignupFrame extends javax.swing.JFrame {
         }
         
         // create account backend
-//        new LoginFrame().setVisible(true); 
+        new LoginFrame().setVisible(true); 
         this.dispose();
     }//GEN-LAST:event_submitButtonActionPerformed
 

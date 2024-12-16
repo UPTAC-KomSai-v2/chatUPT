@@ -399,45 +399,61 @@ public class MainFrame extends javax.swing.JFrame {
         button.setAlignmentX(Component.CENTER_ALIGNMENT); 
         // Add an ActionListener to the button
         button.addActionListener((ActionEvent e) -> {
-            // Fetch the user's role in the channel from the server
-        String userRole = getUserRoleInChannel(chatId, userID); // Query the server for the role
+            // Action to perform on button click
+             // Check the user's role for this chat
+            String userRole = getUserRoleInChannel(chatId, userID); // Method to query the role from server
 
-        if (!isPrivate) {
-            // Public channel - Automatically join with "pending" role
-            if (requestToJoinChannel(chatId, "pending")) {
-                openChatWindow(chatId, true); // Open the chat window
-                //JOptionPane.showMessageDialog(null,"You have entered a public channel as a pending member.",
-                    //"Channel Joined",JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null,"Failed to join the channel. Please try again.",
-                    "Error",JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            // Private channel logic
             if ("admin".equals(userRole) || "member".equals(userRole)) {
-                // Admin or Member - Allow direct entry
-                openChatWindow(chatId, true); // Open the chat window
-            } else if ("pending".equals(userRole)) {
-                // Pending users - Prompt that they are awaiting approval
-                JOptionPane.showMessageDialog(null,"Your request to join this private channel is still pending approval from an admin.",
-                    "Access Denied",JOptionPane.WARNING_MESSAGE);
-            } else {
-                // Not registered in the channel - Prompt to request joining
-                int choice = JOptionPane.showConfirmDialog(null,
-                    "This channel is private. Only members and admins can enter.\nWould you like to request to join?",
-                    "Private Channel",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+                // User is already admin or member, open the chat directly
+                openChatWindow(chatId, true); // Opens the chat window for channels
+            } else if (isPrivate) {
+                // Private channel - Prompt the user
+                int choice = JOptionPane.showConfirmDialog(
+                        null,
+                        "This channel is private. Only members and admins can enter.\nWould you like to request to join?",
+                        "Private Channel",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE
+                );
                 if (choice == JOptionPane.YES_OPTION) {
                     // Request to join the private channel
                     if (requestToJoinChannel(chatId, "pending")) {
-                        JOptionPane.showMessageDialog(null,"Your request to join has been sent. Waiting for approval.",
-                                "Request Sent",JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Your request to join has been sent. Waiting for approval.",
+                                "Request Sent",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
                     } else {
-                        JOptionPane.showMessageDialog(null,"Failed to send the request. Please try again.","Error",
-                            JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "Failed to send the request. Please try again.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE
+                        );
                     }
                 }
+            } else {
+                // Public channel - Automatically join with "pending" role
+                if(userRole == null) userRole = "pending";
+                if (requestToJoinChannel(chatId, userRole)) {
+                    openChatWindow(chatId, true);
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "You have entered a public channel.",
+                            "Channel Joined",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                    
+                } else {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Failed to join the channel. Please try again.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
             }
-        }
         });
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(0, 5)));
