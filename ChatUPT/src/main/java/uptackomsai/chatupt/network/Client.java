@@ -8,7 +8,7 @@ import uptackomsai.chatupt.model.Request;
 
 public class Client {
     private final String serverHost;
-    private final int serverPort = 54321;
+    private final int serverPort = 12345; // changed it temporarily for testing
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
@@ -55,6 +55,9 @@ public class Client {
     }
     
     public void uploadFileToServer(File file) throws IOException {
+        if (socket == null || out == null || dataOut == null) {
+            throw new IOException("Client is not connected to the server.");
+        }
         // Create an Attachment object
         String file_name = file.getName();
         String file_path = file.getAbsolutePath();

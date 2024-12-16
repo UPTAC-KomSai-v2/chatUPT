@@ -39,6 +39,7 @@ public class ChatWindow extends javax.swing.JPanel {
     private int chatID;
     private int userID;
     private boolean isChannel;
+    private File attachedFile; // Holds attached file while sendButton is not clicked
     /**
      * Creates new form ChatWindow
      */
@@ -305,10 +306,79 @@ public class ChatWindow extends javax.swing.JPanel {
     
     private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
         String message = inputField.getText();
-        if (!message.trim().isEmpty()) {
-            client.sendMessage(message);
-            inputField.setText("");
-        }
+        
+        try {
+            if (client != null) {
+                client.connect("joe"); // Replace "joe" with actual user information, for testing
+            }
+            if ((attachedFile != null) && 
+                    ((!message.trim().isEmpty()) || message.trim().isEmpty())) {
+                // SEND FILE TO SERVER FIRST, THEN SEND MESSAGE TO SERVER SECOND
+               
+                // send and upload file to server
+                client.uploadFileToServer(attachedFile);
+           
+                // extract file metadata
+                String file_name = attachedFile.getName();
+                String file_path = attachedFile.getAbsolutePath();
+                int dotIndex = file_name.lastIndexOf('.');
+                String file_type = file_name.substring(dotIndex + 1);
+                int file_size = (int) attachedFile.length();
+                
+                // Clear attachment pane and reset file attachment
+                attachmentPane.setText("<html><head></head><body><p style=\"margin-top: 0\"> </p> </body> </html>");
+                attachedFile = null;
+                
+                // read server response
+                
+                // NOTE: use the file_name above and server response file_path in newMessage request
+            /*
+
+                // Create a Message object and wrap it in a Request
+                Gson gson = new Gson();
+                Message newMessage = new Message(profile_path, user_id, username, time_sent, content, file_name, file_path, is_read);
+                // Message message = new Message("profile/path", 1, "username", String.valueOf(System.currentTimeMillis()),
+                // message, null, null,false);
+                String newmessageJson = gson.toJson(newMessage);
+                Request request = new Request("prevMessages", newmessageJson); 
+                String jsonMessage = gson.toJson(request);
+
+                // Send request to the server
+                out.println(jsonMessage);
+                inputField.setText("");
+                
+                // Read server response
+                String response = in.readLine();
+            */
+                
+           } else if (!message.trim().isEmpty()) {
+            /*
+                // Create a Message object and wrap it in a Request
+                Gson gson = new Gson();
+                Message newMessage = new Message(profile_path, user_id, username, time_sent, content, file_name, file_path, is_read);
+                // Message message = new Message("profile/path", 1, "username", String.valueOf(System.currentTimeMillis()),
+                // message, null, null,false);
+                String newmessageJson = gson.toJson(newMessage);
+                Request request = new Request("newMessage", newmessageJson); 
+                String jsonMessage = gson.toJson(request);
+
+                // Send request to the server
+                out.println(jsonMessage);
+                inputField.setText("");
+                
+                // Read server response
+                String response = in.readLine();
+                
+                // Add the message to the chat window or panel
+                addMessageToMessagesPanel(profilePath, username, timeSent, content, filePath, isRead);
+            */
+                
+           }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Failed to upload file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+         }
+        
     }//GEN-LAST:event_sendButtonActionPerformed
 
     private void addMessageToMessagesPanel(String profile_path, String username,
@@ -340,12 +410,18 @@ public class ChatWindow extends javax.swing.JPanel {
         int returnVal = fileChooser.showOpenDialog(inputPanel);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
+            attachedFile = selectedFile;
             
             String fileName = selectedFile.getName();
             String filePath = selectedFile.getAbsolutePath();
             String url = selectedFile.toURI().toString();
             
-            attachmentPane.setText("<html><body><a href=\"" + url + "\">" + fileName + "</a></body></html>");            
+            attachmentPane.setText("<html><body><a href=\"" + url + "\">" + fileName + "</a></body></html>");     
+            attachmentPane.addHyperlinkListener(new javax.swing.event.HyperlinkListener() {
+                public void hyperlinkUpdate(javax.swing.event.HyperlinkEvent evt) {
+                    attachmentPaneHyperlinkUpdate(evt);
+                }
+            });
         }
     }//GEN-LAST:event_attachButtonActionPerformed
 
