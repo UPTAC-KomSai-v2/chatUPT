@@ -107,7 +107,9 @@ public class DatabaseUtils {
             LEFT JOIN 
                 Attachment a ON m.attachment_id = a.attachment_id
             WHERE 
-                c.chat_id = ?;
+                c.chat_id = ?
+            ORDER BY
+                m.time_sent DESC;
         """;
         PreparedStatement stmt = dbConnection.prepareStatement(query);
         stmt.setInt(1, chatId); // Set the chat_id to filter messages

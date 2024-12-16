@@ -34,7 +34,7 @@ import uptackomsai.chatupt.model.Message;
 import uptackomsai.chatupt.model.Request;
 import uptackomsai.chatupt.utils.DatabaseUtils;
 import java.net.URISyntaxException;
-import uptackomsai.chatupt.network.ChatServer;
+//import uptackomsai.chatupt.network.ChatServer;
 
 public class ChatWindow extends javax.swing.JPanel {
 //    private ChatServer client;
