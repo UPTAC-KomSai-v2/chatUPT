@@ -80,11 +80,11 @@ public class EditProfileProvider implements ServerModule {
     }
 
     @Override
-    public void editUser(String type, String content, PrintWriter out) {
+    public void handleRequest(String type, String content, PrintWriter out) {
         Gson gson = new Gson();
         User user = gson.fromJson(content, User.class);
 
-        if (registerUser(user)) {
+        if (editUser(user)) {
             out.println("Profile edit successful.");
         } else {
             out.println("Edit profile failed");
