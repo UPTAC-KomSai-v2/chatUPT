@@ -104,10 +104,10 @@ public class ProfileManageFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.BorderLayout());
 
-        borderPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(null));
+        borderPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         borderPanel.setLayout(new java.awt.BorderLayout());
 
-        profilepicPreview.setBorder(javax.swing.BorderFactory.createBevelBorder(null));
+        profilepicPreview.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         profilepicPreview.setToolTipText("");
         profilepicPreview.setLayout(new java.awt.BorderLayout());
 
