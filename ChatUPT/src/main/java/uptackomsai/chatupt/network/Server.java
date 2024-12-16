@@ -333,7 +333,6 @@ public class Server {
         server.registerModule(new SetUserOfflineProvider());
         server.registerModule(new SetUserOnlineProvider());
         server.registerModule(new GetChatWindowDetailsProvider());
-        
         server.registerModule(new MessageHandlerProvider());
                 
         DbBaseProvider db = new DbBaseProvider();
