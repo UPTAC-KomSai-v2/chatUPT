@@ -136,6 +136,7 @@ public class Server {
         server.registerModule(new RegisterProvider());
         server.registerModule(new LoginProvider());
         server.registerModule(new NewChannelProvider());
+        server.registerModule(new EditProfileProvider());
         
         DbBaseProvider db = new DbBaseProvider();
         db.setupDatabase();

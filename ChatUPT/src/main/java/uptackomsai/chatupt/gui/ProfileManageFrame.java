@@ -9,6 +9,7 @@ import java.awt.Image;
 import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
@@ -202,7 +203,23 @@ public class ProfileManageFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        // update backend 
+        // TODO update backend 
+        String username = usernameTextField.getText().trim();
+        String currentPass = new String(currentpassField.getPassword()).trim();
+        String password = new String(newpassField.getPassword()).trim();
+        String confirmPassword = new String(newpass2Field.getPassword()).trim();
+        String email = emailTextField.getText().trim();
+        
+        if (!password.equals(confirmPassword)) {
+            JOptionPane.showMessageDialog(this, "Passwords do not match!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (currentPass.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Current password field is required!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         this.dispose();
     }//GEN-LAST:event_saveButtonActionPerformed
 
