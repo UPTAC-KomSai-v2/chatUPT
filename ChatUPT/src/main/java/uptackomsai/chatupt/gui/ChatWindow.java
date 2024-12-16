@@ -48,7 +48,6 @@ public class ChatWindow extends javax.swing.JPanel {
      */
     public ChatWindow(String serverHost,int chatID, int userID ,boolean isChannel) {
         this.serverHost = serverHost;
-//        this.client = new ChatServer(serverHost);
         this.chatID = chatID;
         this.userID = userID;
         this.isChannel = isChannel;
@@ -64,7 +63,7 @@ public class ChatWindow extends javax.swing.JPanel {
             repaint();
         } 
         
-        
+        inputField.addActionListener(e -> sendMessage()); 
     }
     
     private void initChatWindow() {
@@ -95,7 +94,7 @@ public class ChatWindow extends javax.swing.JPanel {
 
             // Parse the response
             JsonObject responseData = gson.fromJson(response, JsonObject.class);
-            String username = responseData.get("username").getAsString();
+            String username = responseData.get("chatname").getAsString();
             boolean isOnline = responseData.get("is_online").getAsBoolean();
 
             // Update the labels
@@ -303,7 +302,7 @@ public class ChatWindow extends javax.swing.JPanel {
         });
     }
     
-    private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
+    private void sendMessage(){
         String content = inputField.getText();
         String attachmentPath = attachmentPane.getText().trim(); // File path for attachments
 
@@ -367,6 +366,9 @@ public class ChatWindow extends javax.swing.JPanel {
             // Clear the input field
             inputField.setText("");
         }
+    }
+    private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
+        sendMessage();
     }//GEN-LAST:event_sendButtonActionPerformed
     
     private void addMessageToMessagesPanel(String profile_path, String username,

@@ -153,6 +153,7 @@ public class LoginFrame extends javax.swing.JFrame {
         jPanel1.add(jLabel2);
 
         serverHostField.setText("localhost");
+        serverHostField.setPreferredSize(new java.awt.Dimension(120, 22));
         serverHostField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 serverHostFieldActionPerformed(evt);
@@ -218,7 +219,6 @@ public class LoginFrame extends javax.swing.JFrame {
     private void signupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signupButtonActionPerformed
         SignupFrame signupFrame = new SignupFrame(serverHostField.getText()); // Open SettingsFrame
         signupFrame.setVisible(true); // Show the new frame
-//        this.dispose(); 
     }//GEN-LAST:event_signupButtonActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
