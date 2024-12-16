@@ -37,7 +37,7 @@ import java.net.URISyntaxException;
 import uptackomsai.chatupt.network.ChatServer;
 
 public class ChatWindow extends javax.swing.JPanel {
-    private ChatServer client;
+//    private ChatServer client;
     private String serverHost;
     private int chatID;
     private int userID;
