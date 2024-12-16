@@ -31,6 +31,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import uptackomsai.chatupt.utils.DatabaseUtils;
 import uptackomsai.chatupt.utils.ImageLoader;
+import uptackomsai.chatupt.utils.SessionUtil;
 public class LoginFrame extends javax.swing.JFrame {
     private String serverHost = "localhost";
     /**
@@ -94,6 +95,7 @@ public class LoginFrame extends javax.swing.JFrame {
             } else {
                 MainFrame mainFrame = new MainFrame(serverHostField.getText(),Integer.parseInt(response)); // userID parameter from response
                 mainFrame.setVisible(true);
+                SessionUtil.sessionUsername = username;
                 this.dispose();
             }
         } catch (IOException e) {

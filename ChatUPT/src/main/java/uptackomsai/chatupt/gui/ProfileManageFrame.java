@@ -32,6 +32,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 import uptackomsai.chatupt.model.Request;
 import uptackomsai.chatupt.model.User;
 import uptackomsai.chatupt.utils.ImageLoader;
+import uptackomsai.chatupt.utils.SessionUtil;
 
 /**
  *
@@ -53,7 +54,7 @@ public class ProfileManageFrame extends javax.swing.JFrame {
         setTitle("Profile Settings");
         setLocationRelativeTo(null);
 
-        usernameTextField.setText(String.valueOf(userID));
+        usernameTextField.setText(SessionUtil.sessionUsername);
         
         profilepicLabel.setIcon(new ImageIcon(
             ImageLoader.loadImageIcon("default.png").getImage().getScaledInstance(
@@ -103,10 +104,10 @@ public class ProfileManageFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.BorderLayout());
 
-        borderPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        borderPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(null));
         borderPanel.setLayout(new java.awt.BorderLayout());
 
-        profilepicPreview.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        profilepicPreview.setBorder(javax.swing.BorderFactory.createBevelBorder(null));
         profilepicPreview.setToolTipText("");
         profilepicPreview.setLayout(new java.awt.BorderLayout());
 
@@ -167,7 +168,6 @@ public class ProfileManageFrame extends javax.swing.JFrame {
         emailLabel.setText("Email Address");
         center.add(emailLabel);
 
-        emailTextField.setText("currentemail@gmail.com");
         emailTextField.setPreferredSize(new java.awt.Dimension(250, 30));
         center.add(emailTextField);
 
