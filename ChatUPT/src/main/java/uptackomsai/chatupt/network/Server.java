@@ -5,13 +5,11 @@ import java.net.*;
 import java.util.concurrent.*;
 import com.google.gson.Gson;
 import uptackomsai.chatupt.model.Request;
-import uptackomsai.chatupt.providers.RegisterProvider;
+import uptackomsai.chatupt.providers.*;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
-import uptackomsai.chatupt.providers.DbBaseProvider;
-import uptackomsai.chatupt.providers.LoginProvider;
-import uptackomsai.chatupt.providers.NewChannelProvider;
 
 public class Server {
     private static final int PORT = 12345;
@@ -82,6 +80,15 @@ public class Server {
                             System.out.println("Processing Channel Add: " + request.getContent());
                             for (ServerModule module : modules) {
                                 if (module instanceof NewChannelProvider) {
+                                    module.handleRequest(request.getType(), request.getContent(), out);
+                                    break;
+                                }
+                            }
+                            break;
+                        case "editProfile": // Handle edit profile
+                            System.out.println("Processing Edit Profile: " + request.getContent());
+                            for (ServerModule module : modules) {
+                                if (module instanceof EditProfileProvider) {
                                     module.handleRequest(request.getType(), request.getContent(), out);
                                     break;
                                 }
