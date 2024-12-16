@@ -96,17 +96,6 @@ public class Server {
                             for (ServerModule module : modules) {
                                 if (module instanceof LoginProvider) {
                                     module.handleRequest(request.getType(), request.getContent(), out);
-                                    // Assume login success; parse the username from the content
-                                    gson = new Gson();
-                                    JsonObject loginData = gson.fromJson(request.getContent(), JsonObject.class);
-                                    username = loginData.get("username").getAsString(); 
-
-                                    // Add client to connected clients map
-                                    clients.put(username, out);
-                                    System.out.println(username + " logged in and added to clients.");
-
-                                    // Broadcast updated online users list
-                                    broadcast("updateOnlineUsers","");
                                     break;
                                 }
                             }

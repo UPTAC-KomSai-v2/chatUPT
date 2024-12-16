@@ -26,7 +26,7 @@ import uptackomsai.chatupt.utils.ImageLoader;
  * @author Lei
  */
 public class SignupFrame extends javax.swing.JFrame {
-    private String serverHost = "192.168.137.1";
+    private String serverHost;
     /**
      * Creates new form SignupFrame
      */

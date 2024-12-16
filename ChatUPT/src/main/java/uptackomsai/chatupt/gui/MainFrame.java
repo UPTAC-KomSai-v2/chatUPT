@@ -51,9 +51,9 @@ import uptackomsai.chatupt.utils.DatabaseUtils;
  * @author Lei
  */
 public class MainFrame extends javax.swing.JFrame {
-    private String serverHost = "localhost";
+    private String serverHost;
     private final int userID;
-    DatabaseUtils dbUtils = new DatabaseUtils();
+//    DatabaseUtils dbUtils = new DatabaseUtils();
     /**
      * Creates new form ChatFrame
      * @param userID
@@ -77,50 +77,11 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         
-        startBroadcastListener();
-        
         initializeAppPanel();
         initializeProfilePanel();
         initializeChannelList();
         initializeOnlineUserList();
         initializeAllUserList();
-    }
-    
-    private void startBroadcastListener() {
-        new Thread(() -> {
-            try (Socket socket = new Socket(serverHost, 12345);
-                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-                Gson gson = new Gson();
-
-                while (true) {
-                    // Read broadcast messages from the server
-                    String response = in.readLine();
-                    if (response != null) {
-                        Request broadcast = gson.fromJson(response, Request.class);
-
-                        // Handle different types of broadcasts
-                        switch (broadcast.getType()) {
-                            case "updateOnlineUsers":
-                                SwingUtilities.invokeLater(() -> test());
-                                break;
-
-                            case "updateChannels":
-                                SwingUtilities.invokeLater(() -> initializeChannelList());
-                                break;
-
-                            default:
-                                System.out.println("Unknown broadcast type: " + broadcast.getType());
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                System.err.println("Error listening for broadcasts: " + e.getMessage());
-            }
-        }).start();
-    }
-    
-    private void test(){
-        JOptionPane.showMessageDialog(this, "Test", "Error", JOptionPane.ERROR_MESSAGE);
     }
     
     
