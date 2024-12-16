@@ -11,6 +11,7 @@ import uptackomsai.chatupt.providers.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
+import uptackomsai.chatupt.model.Attachment;
 import uptackomsai.chatupt.providers.ChatMessageProvider;
 import uptackomsai.chatupt.providers.DbBaseProvider;
 import uptackomsai.chatupt.providers.GetAllChannelsProvider;
@@ -70,6 +71,7 @@ public class Server {
         @Override
         public void run() {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+                DataInputStream dataIn = new DataInputStream(socket.getInputStream()); // exclusive for file upload
                 Gson gson = new Gson();
                 out = new PrintWriter(socket.getOutputStream(), true);
 
@@ -216,6 +218,7 @@ public class Server {
                                     break;
                                 }
                             }
+                            break;
                         case "editProfile": // Handle edit profile
                             System.out.println("Processing Edit Profile: " + request.getContent());
                             for (ServerModule module : modules) {
@@ -224,6 +227,11 @@ public class Server {
                                     break;
                                 }
                             }
+                            break;
+                        case "uploadAttachment":  // Handle file attachment
+                            System.out.println("Getting the attachment metadata: " + request.getContent());
+                            handleFileUpload(request.getContent(), dataIn);
+                            break;
                         default:
                             System.err.println("Unknown request type: " + request.getType());
                     }
@@ -257,6 +265,40 @@ public class Server {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        
+        private void handleFileUpload(String jsonMessage, DataInputStream dataIn) {
+            // Read received file metadata
+            Gson gson = new Gson();
+            Attachment attachment = gson.fromJson(jsonMessage, Attachment.class);
+            String fileName = attachment.getFileName();
+            long fileSize = attachment.getFileSize();
+            
+            // Save the file in the "uploads" directory
+            File uploadsDir = new File("uploads");
+            if (!uploadsDir.exists()) {
+                uploadsDir.mkdir();
+            }
+
+            File uploadedFile = new File(uploadsDir, fileName);
+            try (FileOutputStream fileOut = new FileOutputStream(uploadedFile)) {
+                byte[] buffer = new byte[4096];
+                long bytesRemaining = fileSize;
+                int bytesRead;
+                while (bytesRemaining > 0) {
+                    bytesRead = dataIn.read(buffer, 0, (int) Math.min(buffer.length, bytesRemaining));
+                    if (bytesRead == -1) {
+                        throw new IOException("Stream closed before file fully read");
+                    }
+                    fileOut.write(buffer, 0, bytesRead);
+                    bytesRemaining -= bytesRead;
+                }
+
+                System.out.println("File uploaded successfully: " + uploadedFile.getAbsolutePath());
+            } catch (IOException e) {
+                System.err.println("Error receiving file: " + e.getMessage());
+            }
+            
         }
     }
 
